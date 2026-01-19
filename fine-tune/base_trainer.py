@@ -37,7 +37,6 @@ from tqdm.auto import tqdm
 
 # Integrations must be imported before ML frameworks:
 from transformers.integrations import (  # isort: split
-    default_hp_search_backend,
     get_reporting_integration_callbacks,
     hp_params,
     is_fairscale_available,
@@ -50,6 +49,10 @@ from transformers.integrations import (  # isort: split
     run_hp_search_sigopt,
     run_hp_search_wandb,
 )
+# --- THÊM ĐOẠN NÀY ---
+def default_hp_search_backend():
+    return None
+# ---------------------
 
 import numpy as np
 import torch
