@@ -686,8 +686,14 @@ class Seq2SeqTrainer(Trainer):
             generation_inputs = inputs[self.model.encoder.main_input_name]
         else:
             generation_inputs = inputs[self.model.main_input_name]
+
+        if hasattr(self.model, "module"):
+            # If wrapped (DataParallel/DDP), access the inner model
+            model_to_gen = self.model.module
+        else:
+            model_to_gen = self.model
         
-        generated_tokens = self.model.generate(
+        generated_tokens = model_to_gen.generate(
             generation_inputs,
             **gen_kwargs,
             use_cache=True,
