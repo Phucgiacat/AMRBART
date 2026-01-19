@@ -687,12 +687,42 @@ class Seq2SeqTrainer(Trainer):
         else:
             generation_inputs = inputs[self.model.main_input_name]
 
-        if hasattr(self.model, "module"):
-            # If wrapped (DataParallel/DDP), access the inner model
-            model_to_gen = self.model.module
+        # --- FIX START: Runtime Class Injection, Config Patch, and Method Patching ---
+        from transformers.generation.utils import GenerationMixin
+        from transformers import GenerationConfig
+        import types
+
+        # 1. Unwrap the model (DataParallel/DDP)
+        model_to_gen = self.model
+        while hasattr(model_to_gen, "module"):
+            model_to_gen = model_to_gen.module
+
+        # 2. Inject GenerationMixin (Functionality)
+        cls = model_to_gen.__class__
+        if GenerationMixin not in cls.__bases__:
+            cls.__bases__ = (GenerationMixin,) + cls.__bases__
+
+        # 3. Inject GenerationConfig (Configuration)
+        if getattr(model_to_gen, "generation_config", None) is None:
+             model_to_gen.generation_config = GenerationConfig.from_model_config(model_to_gen.config)
+
+        # 4. CRITICAL FIX: Inject missing helper method '_can_retrieve_inputs_from_name'
+        # The custom modeling_bart.py calls this method, but it might be missing from the base classes.
+        if not hasattr(model_to_gen, "_can_retrieve_inputs_from_name"):
+            def _can_retrieve_inputs_from_name(self, inputs, name, model_kwargs):
+                # Common logic to check if input exists
+                return (isinstance(inputs, dict) and name in inputs) or name in model_kwargs
+            
+            # Bind the method to the model instance
+            model_to_gen._can_retrieve_inputs_from_name = types.MethodType(_can_retrieve_inputs_from_name, model_to_gen)
+
+        # 5. Determine input names
+        if hasattr(model_to_gen, "encoder") and model_to_gen.encoder.main_input_name != model_to_gen.main_input_name:
+            generation_inputs = inputs[model_to_gen.encoder.main_input_name]
         else:
-            model_to_gen = self.model
+            generation_inputs = inputs[model_to_gen.main_input_name]
         
+        # 6. Run generate
         generated_tokens = model_to_gen.generate(
             generation_inputs,
             **gen_kwargs,
