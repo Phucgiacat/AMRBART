@@ -10,9 +10,10 @@ from transformers.optimization import (
     get_constant_schedule_with_warmup,
 )
 
+from torch.optim import AdamW  # <--- Thêm dòng này (lấy AdamW từ PyTorch)
+
 from transformers import (
     WEIGHTS_NAME,
-    AdamW,
     Adafactor,
     AutoConfig,
     AutoTokenizer,

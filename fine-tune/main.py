@@ -14,7 +14,8 @@ import transformers
 import numpy as np
 from dataclasses import dataclass, field
 from typing import Optional
-from datasets import load_dataset, load_metric, load_from_disk
+from datasets import load_dataset, load_from_disk
+from evaluate import load as load_metric
 from data_interface.dataset import AMR2TextDataSet, AMRParsingDataSet, DataCollatorForAMR2Text, DataCollatorForAMRParsing
 from model_interface.modeling_bart import BartForConditionalGeneration
 from model_interface.tokenization_bart import AMRBartTokenizer
