@@ -5,7 +5,7 @@ RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 Dataset=ViAMR
 
 BasePath=/content/AMRBART  # change dir here to the project path
-DataPath=/content/data/ViAMR/$Dataset  # change dir here to the path of dfs_NLR and dfs_NRL data
+DataPath=/content/AMRBART/data/ViAMR/$Dataset  # change dir here to the path of dfs_NLR and dfs_NRL data
 
 ModelCate=AMRBART-large  # our backbone model is AMRBART，you can also change it to others e.g. SPRING, BART.
 
