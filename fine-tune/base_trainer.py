@@ -133,10 +133,13 @@ from transformers.trainer_utils import (
     get_last_checkpoint,
     has_length,
     number_of_arguments,
-    seed_worker,
     set_seed,
     speed_metrics,
 )
+def seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 # --- THÊM DÒNG NÀY ---
 default_hp_space = {}
 # ---------------------
@@ -1112,8 +1115,8 @@ class Trainer:
         if args.optim == OptimizerNames.ADAFACTOR:
             optimizer_cls = Adafactor
             optimizer_kwargs.update({"scale_parameter": False, "relative_step": False})
-        elif args.optim == OptimizerNames.ADAMW_HF:
-            from transformers.optimization import AdamW
+        elif args.optim == "adamw_hf" or args.optim == OptimizerNames.ADAMW_TORCH:
+            from torch.optim import AdamW
 
             optimizer_cls = AdamW
             optimizer_kwargs.update(adam_kwargs)
@@ -1693,7 +1696,9 @@ class Trainer:
         self._total_loss_scalar = 0.0
         self._globalstep_last_logged = self.state.global_step
         model.zero_grad()
-
+        # PATCH: Alias evaluation_strategy to eval_strategy for newer transformers versions
+        if not hasattr(args, "eval_strategy") and hasattr(args, "evaluation_strategy"):
+            args.eval_strategy = args.evaluation_strategy
         self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
 
         # Skip the first epochs_trained epochs to get the random state of the dataloader at the right point.
