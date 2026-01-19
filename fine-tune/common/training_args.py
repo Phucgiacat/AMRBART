@@ -29,7 +29,6 @@ from transformers.trainer_utils import (
     HubStrategy,
     IntervalStrategy,
     SchedulerType,
-    ShardedDDPOption,
 )
 
 from functools import cached_property
