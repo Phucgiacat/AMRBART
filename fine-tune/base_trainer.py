@@ -127,7 +127,6 @@ from transformers.trainer_utils import (
     TrainerMemoryTracker,
     TrainOutput,
     default_compute_objective,
-    default_hp_space,
     denumpify_detensorize,
     enable_full_determinism,
     find_executable_batch_size,
@@ -138,6 +137,9 @@ from transformers.trainer_utils import (
     set_seed,
     speed_metrics,
 )
+# --- THÊM DÒNG NÀY ---
+default_hp_space = {}
+# ---------------------
 # --- THÊM ĐOẠN CODE NÀY ĐỂ SỬA LỖI ---
 class ShardedDDPOption:
     SIMPLE = "simple"
