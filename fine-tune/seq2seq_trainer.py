@@ -47,16 +47,16 @@ from transformers.utils import (
     is_ipex_available,
     is_sagemaker_dp_enabled,
     is_sagemaker_mp_enabled,
-    is_torch_tpu_available,
     is_torchdynamo_available,
     logging,
 )
 
+def is_torch_tpu_available(check_device=True):
+    return False
+
 from transformers.integrations import (  # isort: split
-    default_hp_search_backend,
     get_reporting_integration_callbacks,
     hp_params,
-    is_fairscale_available,
     is_optuna_available,
     is_ray_tune_available,
     is_sigopt_available,
@@ -66,6 +66,14 @@ from transformers.integrations import (  # isort: split
     run_hp_search_sigopt,
     run_hp_search_wandb,
 )
+# --- THÊM ĐOẠN NÀY ---
+def is_fairscale_available():
+    return False
+# ---------------------
+# --- THÊM ĐOẠN NÀY ---
+def default_hp_search_backend():
+    return None
+# ---------------------
 
 from transformers.trainer_pt_utils import (
     DistributedLengthGroupedSampler,
@@ -99,11 +107,9 @@ from transformers.trainer_utils import (
     IntervalStrategy,
     PredictionOutput,
     RemoveColumnsCollator,
-    ShardedDDPOption,
     TrainerMemoryTracker,
     TrainOutput,
     default_compute_objective,
-    default_hp_space,
     denumpify_detensorize,
     enable_full_determinism,
     find_executable_batch_size,
@@ -114,6 +120,17 @@ from transformers.trainer_utils import (
     set_seed,
     speed_metrics,
 )
+# --- THÊM DÒNG NÀY ---
+default_hp_space = {}
+# ---------------------
+# --- THÊM ĐOẠN CODE NÀY ĐỂ SỬA LỖI ---
+class ShardedDDPOption:
+    SIMPLE = "simple"
+    ZERO_DP_2 = "zero_dp_2"
+    ZERO_DP_3 = "zero_dp_3"
+    OFFLOAD = "offload"
+    AUTO_WRAP = "auto_wrap"
+# -------------------------------------
 from transformers.trainer_callback import TrainerCallback
 
 from transformers.utils import ModelOutput, logging
