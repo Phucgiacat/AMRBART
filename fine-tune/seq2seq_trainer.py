@@ -687,42 +687,58 @@ class Seq2SeqTrainer(Trainer):
         else:
             generation_inputs = inputs[self.model.main_input_name]
 
-        # --- FIX START: Runtime Class Injection, Config Patch, and Method Patching ---
+        # --- FIX START: Complete Runtime Patching for AMRBART ---
         from transformers.generation.utils import GenerationMixin
         from transformers import GenerationConfig
         import types
 
-        # 1. Unwrap the model (DataParallel/DDP)
+        # 1. Unwrap the model
         model_to_gen = self.model
         while hasattr(model_to_gen, "module"):
             model_to_gen = model_to_gen.module
 
-        # 2. Inject GenerationMixin (Functionality)
+        # 2. Inject GenerationMixin
         cls = model_to_gen.__class__
         if GenerationMixin not in cls.__bases__:
             cls.__bases__ = (GenerationMixin,) + cls.__bases__
 
-        # 3. Inject GenerationConfig (Configuration)
+        # 3. Inject GenerationConfig
         if getattr(model_to_gen, "generation_config", None) is None:
              model_to_gen.generation_config = GenerationConfig.from_model_config(model_to_gen.config)
 
-        # 4. CRITICAL FIX: Inject missing helper method '_can_retrieve_inputs_from_name'
-        # The custom modeling_bart.py calls this method, but it might be missing from the base classes.
+        # 4. Inject '_can_retrieve_inputs_from_name'
         if not hasattr(model_to_gen, "_can_retrieve_inputs_from_name"):
             def _can_retrieve_inputs_from_name(self, inputs, name, model_kwargs):
-                # Common logic to check if input exists
                 return (isinstance(inputs, dict) and name in inputs) or name in model_kwargs
-            
-            # Bind the method to the model instance
             model_to_gen._can_retrieve_inputs_from_name = types.MethodType(_can_retrieve_inputs_from_name, model_to_gen)
 
-        # 5. Determine input names
+        # 5. CRITICAL FIX: Override '_prepare_encoder_decoder_kwargs_for_generation'
+        # This implementation accepts extra args (*args, **kwargs) to prevent the TypeError,
+        # then simply runs the encoder if outputs aren't present.
+        def _prepare_encoder_decoder_kwargs_for_generation(self, inputs_tensor, model_kwargs, model_input_name, *args, **kwargs):
+            # Check if encoder outputs are already present
+            if "encoder_outputs" not in model_kwargs:
+                # Prepare inputs for the encoder
+                encoder = self.get_encoder()
+                encoder_kwargs = {
+                    argument: value
+                    for argument, value in model_kwargs.items()
+                    if not argument.startswith("decoder_") and argument != "encoder_outputs"
+                }
+                # Run the encoder
+                model_kwargs["encoder_outputs"] = encoder(inputs_tensor, **encoder_kwargs)
+            return model_kwargs
+
+        # Attach this new method to the model instance
+        model_to_gen._prepare_encoder_decoder_kwargs_for_generation = types.MethodType(_prepare_encoder_decoder_kwargs_for_generation, model_to_gen)
+
+        # 6. Determine input names
         if hasattr(model_to_gen, "encoder") and model_to_gen.encoder.main_input_name != model_to_gen.main_input_name:
             generation_inputs = inputs[model_to_gen.encoder.main_input_name]
         else:
             generation_inputs = inputs[model_to_gen.main_input_name]
         
-        # 6. Run generate
+        # 7. Run generate
         generated_tokens = model_to_gen.generate(
             generation_inputs,
             **gen_kwargs,
