@@ -713,19 +713,23 @@ class Seq2SeqTrainer(Trainer):
             model_to_gen._can_retrieve_inputs_from_name = types.MethodType(_can_retrieve_inputs_from_name, model_to_gen)
 
         # 5. CRITICAL FIX: Override '_prepare_encoder_decoder_kwargs_for_generation'
-        # This implementation accepts extra args (*args, **kwargs) to prevent the TypeError,
-        # then simply runs the encoder if outputs aren't present.
+        # This implementation filters out custom inputs like 'input_ids_dfs_NRL'
+        # that cause the standard BartEncoder to crash.
         def _prepare_encoder_decoder_kwargs_for_generation(self, inputs_tensor, model_kwargs, model_input_name, *args, **kwargs):
-            # Check if encoder outputs are already present
             if "encoder_outputs" not in model_kwargs:
-                # Prepare inputs for the encoder
                 encoder = self.get_encoder()
+                
+                # Define keys to explicitly exclude from the encoder call
+                forbidden_keys = ["input_ids_dfs_NRL", "encoder_outputs"]
+                
                 encoder_kwargs = {
                     argument: value
                     for argument, value in model_kwargs.items()
-                    if not argument.startswith("decoder_") and argument != "encoder_outputs"
+                    if not argument.startswith("decoder_") 
+                    and argument not in forbidden_keys
                 }
-                # Run the encoder
+                
+                # Run the encoder with the cleaned arguments
                 model_kwargs["encoder_outputs"] = encoder(inputs_tensor, **encoder_kwargs)
             return model_kwargs
 

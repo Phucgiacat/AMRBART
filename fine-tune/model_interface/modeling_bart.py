@@ -1559,33 +1559,95 @@ class BartForConditionalGeneration(BartPretrainedModel):
         amr_encoder_outputs: Optional[ModelOutput] = None,
         **model_kwargs,
     ) -> Tuple[torch.LongTensor, Dict[str, Any]]:
+        
+        # 1. Create the index for repeating/expanding beams
         expanded_return_idx = (
             torch.arange(input_ids.shape[0]).view(-1, 1).repeat(1, expand_size).view(-1).to(input_ids.device)
         )
         input_ids = input_ids.index_select(0, expanded_return_idx)
+
+        # 2. Expand token_type_ids if present
         if "token_type_ids" in model_kwargs:
             token_type_ids = model_kwargs["token_type_ids"]
             model_kwargs["token_type_ids"] = token_type_ids.index_select(0, expanded_return_idx)
 
+        # 3. Expand attention_mask
         if attention_mask is not None:
             model_kwargs["attention_mask"] = attention_mask.index_select(0, expanded_return_idx)
+
+        # 4. Expand amr_attention_mask (Safe check)
+        # Check kwargs if argument is None
+        if amr_attention_mask is None:
+            amr_attention_mask = model_kwargs.get("amr_attention_mask")
+            
+        if amr_attention_mask is not None:
             model_kwargs["amr_attention_mask"] = amr_attention_mask.index_select(0, expanded_return_idx)
 
         if is_encoder_decoder:
+            # 5. Handle encoder_outputs
+            # Fallback: Check kwargs if argument is None
+            if encoder_outputs is None:
+                encoder_outputs = model_kwargs.get("encoder_outputs")
+            
             if encoder_outputs is None:
                 raise ValueError("If `is_encoder_decoder` is True, make sure that `encoder_outputs` is defined.")
+            
+            # Expand standard encoder outputs
             encoder_outputs["last_hidden_state"] = encoder_outputs.last_hidden_state.index_select(
                 0, expanded_return_idx.to(encoder_outputs.last_hidden_state.device)
             )
             model_kwargs["encoder_outputs"] = encoder_outputs
             
+            # 6. Handle amr_encoder_outputs
+            # Fallback: Check kwargs if argument is None
             if amr_encoder_outputs is None:
-                raise ValueError("If `is_encoder_decoder` is True, make sure that `encoder_outputs` is defined.")
-            amr_encoder_outputs["last_hidden_state"] = amr_encoder_outputs.last_hidden_state.index_select(
-                0, expanded_return_idx.to(amr_encoder_outputs.last_hidden_state.device)
-            )
-            model_kwargs["amr_encoder_outputs"] = amr_encoder_outputs
+                amr_encoder_outputs = model_kwargs.get("amr_encoder_outputs")
+
+            # Only try to expand if it actually exists (prevent crash if None)
+            if amr_encoder_outputs is not None:
+                amr_encoder_outputs["last_hidden_state"] = amr_encoder_outputs.last_hidden_state.index_select(
+                    0, expanded_return_idx.to(amr_encoder_outputs.last_hidden_state.device)
+                )
+                model_kwargs["amr_encoder_outputs"] = amr_encoder_outputs
+
         return input_ids, model_kwargs
+    # def _expand_inputs_for_generation(
+    #     input_ids: torch.LongTensor,
+    #     expand_size: int = 1,
+    #     is_encoder_decoder: bool = False,
+    #     attention_mask: Optional[torch.LongTensor] = None,
+    #     encoder_outputs: Optional[ModelOutput] = None,
+    #     amr_attention_mask: Optional[torch.LongTensor] = None,
+    #     amr_encoder_outputs: Optional[ModelOutput] = None,
+    #     **model_kwargs,
+    # ) -> Tuple[torch.LongTensor, Dict[str, Any]]:
+    #     expanded_return_idx = (
+    #         torch.arange(input_ids.shape[0]).view(-1, 1).repeat(1, expand_size).view(-1).to(input_ids.device)
+    #     )
+    #     input_ids = input_ids.index_select(0, expanded_return_idx)
+    #     if "token_type_ids" in model_kwargs:
+    #         token_type_ids = model_kwargs["token_type_ids"]
+    #         model_kwargs["token_type_ids"] = token_type_ids.index_select(0, expanded_return_idx)
+
+    #     if attention_mask is not None:
+    #         model_kwargs["attention_mask"] = attention_mask.index_select(0, expanded_return_idx)
+    #         model_kwargs["amr_attention_mask"] = amr_attention_mask.index_select(0, expanded_return_idx)
+
+    #     if is_encoder_decoder:
+    #         if encoder_outputs is None:
+    #             raise ValueError("If `is_encoder_decoder` is True, make sure that `encoder_outputs` is defined.")
+    #         encoder_outputs["last_hidden_state"] = encoder_outputs.last_hidden_state.index_select(
+    #             0, expanded_return_idx.to(encoder_outputs.last_hidden_state.device)
+    #         )
+    #         model_kwargs["encoder_outputs"] = encoder_outputs
+            
+    #         if amr_encoder_outputs is None:
+    #             raise ValueError("If `is_encoder_decoder` is True, make sure that `encoder_outputs` is defined.")
+    #         amr_encoder_outputs["last_hidden_state"] = amr_encoder_outputs.last_hidden_state.index_select(
+    #             0, expanded_return_idx.to(amr_encoder_outputs.last_hidden_state.device)
+    #         )
+    #         model_kwargs["amr_encoder_outputs"] = amr_encoder_outputs
+    #     return input_ids, model_kwargs
 
 
     def _prepare_model_inputs(
