@@ -88,5 +88,5 @@ python3 -u main.py \
     --do_eval \
     --do_predict \
     --ddp_find_unused_parameters False \
-    --report_to "tensorboard" \
+    --report_to "none" \
     --dataloader_pin_memory True 2>&1 | tee $OutputDir/run.log
