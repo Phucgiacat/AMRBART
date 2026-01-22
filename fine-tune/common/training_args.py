@@ -29,31 +29,28 @@ from transformers.trainer_utils import (
     HubStrategy,
     IntervalStrategy,
     SchedulerType,
+    ShardedDDPOption,
 )
-
-from functools import cached_property
-
 from transformers.utils import (
     ExplicitEnum,
+    cached_property,
     get_full_repo_name,
     is_sagemaker_dp_enabled,
     is_sagemaker_mp_enabled,
     is_torch_available,
     is_torch_bf16_available,
     is_torch_tf32_available,
+    is_torch_tpu_available,
     logging,
+    is_torch_available,
 )
-
-# --- THÊM ĐOẠN NÀY ---
-def is_torch_tpu_available(check_device=True):
-    return False
-# ---------------------
-
-# --- THÊM ĐOẠN NÀY ---
+# Add this function at the top of the file
 def torch_required(func):
-    # Hàm giả: trả về nguyên vẹn function mà không làm gì cả
-    return func
-# ---------------------
+    def wrapper(*args, **kwargs):
+        if not is_torch_available():
+            raise ImportError("PyTorch required")
+        return func(*args, **kwargs)
+    return wrapper
 
 if is_torch_available():
     import torch
@@ -1129,19 +1126,19 @@ class TrainingArguments:
                 " during training"
             )
 
-        # if isinstance(self.sharded_ddp, bool):
-        #     self.sharded_ddp = "simple" if self.sharded_ddp else ""
-        # if isinstance(self.sharded_ddp, str):
-        #     self.sharded_ddp = [ShardedDDPOption(s) for s in self.sharded_ddp.split()]
-        # if self.sharded_ddp == [ShardedDDPOption.OFFLOAD]:
-        #     raise ValueError(
-        #         "`--sharded_ddp offload` can't work on its own. It needs to be added to `--sharded_ddp zero_dp_2` or "
-        #         '`--sharded_ddp zero_dp_3`. For example, `--sharded_ddp "zero_dp_2 offload"`.'
-        #     )
-        # elif len(self.sharded_ddp) > 1 and ShardedDDPOption.SIMPLE in self.sharded_ddp:
-        #     raise ValueError("`--sharded_ddp simple` is not compatible with any other option.")
-        # elif ShardedDDPOption.ZERO_DP_2 in self.sharded_ddp and ShardedDDPOption.ZERO_DP_3 in self.sharded_ddp:
-        #     raise ValueError("`--sharded_ddp zero_dp_2` is not compatible with `--sharded_ddp zero_dp_3`.")
+        if isinstance(self.sharded_ddp, bool):
+            self.sharded_ddp = "simple" if self.sharded_ddp else ""
+        if isinstance(self.sharded_ddp, str):
+            self.sharded_ddp = [ShardedDDPOption(s) for s in self.sharded_ddp.split()]
+        if self.sharded_ddp == [ShardedDDPOption.OFFLOAD]:
+            raise ValueError(
+                "`--sharded_ddp offload` can't work on its own. It needs to be added to `--sharded_ddp zero_dp_2` or "
+                '`--sharded_ddp zero_dp_3`. For example, `--sharded_ddp "zero_dp_2 offload"`.'
+            )
+        elif len(self.sharded_ddp) > 1 and ShardedDDPOption.SIMPLE in self.sharded_ddp:
+            raise ValueError("`--sharded_ddp simple` is not compatible with any other option.")
+        elif ShardedDDPOption.ZERO_DP_2 in self.sharded_ddp and ShardedDDPOption.ZERO_DP_3 in self.sharded_ddp:
+            raise ValueError("`--sharded_ddp zero_dp_2` is not compatible with `--sharded_ddp zero_dp_3`.")
 
         if isinstance(self.fsdp, bool):
             self.fsdp = "full_shard" if self.fsdp else ""

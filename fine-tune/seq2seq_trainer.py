@@ -21,7 +21,7 @@ from torch import nn
 from torch.utils.data import Dataset
 from packaging import version
 
-from transformers.integrations import is_deepspeed_zero3_enabled
+from transformers.deepspeed import is_deepspeed_zero3_enabled
 from base_trainer import Trainer
 # from hf_trainer import Trainer
 from transformers.trainer_utils import PredictionOutput
@@ -47,16 +47,16 @@ from transformers.utils import (
     is_ipex_available,
     is_sagemaker_dp_enabled,
     is_sagemaker_mp_enabled,
+    is_torch_tpu_available,
     is_torchdynamo_available,
     logging,
 )
 
-def is_torch_tpu_available(check_device=True):
-    return False
-
 from transformers.integrations import (  # isort: split
+    default_hp_search_backend,
     get_reporting_integration_callbacks,
     hp_params,
+    is_fairscale_available,
     is_optuna_available,
     is_ray_tune_available,
     is_sigopt_available,
@@ -66,14 +66,6 @@ from transformers.integrations import (  # isort: split
     run_hp_search_sigopt,
     run_hp_search_wandb,
 )
-# --- THÊM ĐOẠN NÀY ---
-def is_fairscale_available():
-    return False
-# ---------------------
-# --- THÊM ĐOẠN NÀY ---
-def default_hp_search_backend():
-    return None
-# ---------------------
 
 from transformers.trainer_pt_utils import (
     DistributedLengthGroupedSampler,
@@ -107,9 +99,11 @@ from transformers.trainer_utils import (
     IntervalStrategy,
     PredictionOutput,
     RemoveColumnsCollator,
+    ShardedDDPOption,
     TrainerMemoryTracker,
     TrainOutput,
     default_compute_objective,
+    default_hp_space,
     denumpify_detensorize,
     enable_full_determinism,
     find_executable_batch_size,
@@ -120,17 +114,6 @@ from transformers.trainer_utils import (
     set_seed,
     speed_metrics,
 )
-# --- THÊM DÒNG NÀY ---
-default_hp_space = {}
-# ---------------------
-# --- THÊM ĐOẠN CODE NÀY ĐỂ SỬA LỖI ---
-class ShardedDDPOption:
-    SIMPLE = "simple"
-    ZERO_DP_2 = "zero_dp_2"
-    ZERO_DP_3 = "zero_dp_3"
-    OFFLOAD = "offload"
-    AUTO_WRAP = "auto_wrap"
-# -------------------------------------
 from transformers.trainer_callback import TrainerCallback
 
 from transformers.utils import ModelOutput, logging
@@ -218,7 +201,6 @@ class Seq2SeqTrainer(Trainer):
         train_dataset: Optional[Dataset] = None,
         eval_dataset: Optional[Dataset] = None,
         tokenizer: Optional[PreTrainedTokenizerBase] = None,
-        is_deepspeed_enabled: bool = False,
         model_init: Callable[[], PreTrainedModel] = None,
         compute_metrics: Optional[Callable[[EvalPrediction], Dict]] = None,
         callbacks: Optional[List[TrainerCallback]] = None,
@@ -686,64 +668,8 @@ class Seq2SeqTrainer(Trainer):
             generation_inputs = inputs[self.model.encoder.main_input_name]
         else:
             generation_inputs = inputs[self.model.main_input_name]
-
-        # --- FIX START: Complete Runtime Patching for AMRBART ---
-        from transformers.generation.utils import GenerationMixin
-        from transformers import GenerationConfig
-        import types
-
-        # 1. Unwrap the model
-        model_to_gen = self.model
-        while hasattr(model_to_gen, "module"):
-            model_to_gen = model_to_gen.module
-
-        # 2. Inject GenerationMixin
-        cls = model_to_gen.__class__
-        if GenerationMixin not in cls.__bases__:
-            cls.__bases__ = (GenerationMixin,) + cls.__bases__
-
-        # 3. Inject GenerationConfig
-        if getattr(model_to_gen, "generation_config", None) is None:
-             model_to_gen.generation_config = GenerationConfig.from_model_config(model_to_gen.config)
-
-        # 4. Inject '_can_retrieve_inputs_from_name'
-        if not hasattr(model_to_gen, "_can_retrieve_inputs_from_name"):
-            def _can_retrieve_inputs_from_name(self, inputs, name, model_kwargs):
-                return (isinstance(inputs, dict) and name in inputs) or name in model_kwargs
-            model_to_gen._can_retrieve_inputs_from_name = types.MethodType(_can_retrieve_inputs_from_name, model_to_gen)
-
-        # 5. CRITICAL FIX: Override '_prepare_encoder_decoder_kwargs_for_generation'
-        # This implementation filters out custom inputs like 'input_ids_dfs_NRL'
-        # that cause the standard BartEncoder to crash.
-        def _prepare_encoder_decoder_kwargs_for_generation(self, inputs_tensor, model_kwargs, model_input_name, *args, **kwargs):
-            if "encoder_outputs" not in model_kwargs:
-                encoder = self.get_encoder()
-                
-                # Define keys to explicitly exclude from the encoder call
-                forbidden_keys = ["input_ids_dfs_NRL", "encoder_outputs"]
-                
-                encoder_kwargs = {
-                    argument: value
-                    for argument, value in model_kwargs.items()
-                    if not argument.startswith("decoder_") 
-                    and argument not in forbidden_keys
-                }
-                
-                # Run the encoder with the cleaned arguments
-                model_kwargs["encoder_outputs"] = encoder(inputs_tensor, **encoder_kwargs)
-            return model_kwargs
-
-        # Attach this new method to the model instance
-        model_to_gen._prepare_encoder_decoder_kwargs_for_generation = types.MethodType(_prepare_encoder_decoder_kwargs_for_generation, model_to_gen)
-
-        # 6. Determine input names
-        if hasattr(model_to_gen, "encoder") and model_to_gen.encoder.main_input_name != model_to_gen.main_input_name:
-            generation_inputs = inputs[model_to_gen.encoder.main_input_name]
-        else:
-            generation_inputs = inputs[model_to_gen.main_input_name]
         
-        # 7. Run generate
-        generated_tokens = model_to_gen.generate(
+        generated_tokens = self.model.generate(
             generation_inputs,
             **gen_kwargs,
             use_cache=True,

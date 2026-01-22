@@ -37,8 +37,10 @@ from tqdm.auto import tqdm
 
 # Integrations must be imported before ML frameworks:
 from transformers.integrations import (  # isort: split
+    default_hp_search_backend,
     get_reporting_integration_callbacks,
     hp_params,
+    is_fairscale_available,
     is_optuna_available,
     is_ray_tune_available,
     is_sigopt_available,
@@ -48,14 +50,6 @@ from transformers.integrations import (  # isort: split
     run_hp_search_sigopt,
     run_hp_search_wandb,
 )
-# --- THÊM ĐOẠN NÀY ---
-def is_fairscale_available():
-    return False
-# ---------------------
-# --- THÊM ĐOẠN NÀY ---
-def default_hp_search_backend():
-    return None
-# ---------------------
 
 import numpy as np
 import torch
@@ -71,7 +65,7 @@ from transformers import __version__
 from transformers.configuration_utils import PretrainedConfig
 from transformers.data.data_collator import DataCollator, DataCollatorWithPadding, default_data_collator
 from transformers.debug_utils import DebugOption, DebugUnderflowOverflow
-from transformers.integrations import is_deepspeed_zero3_enabled
+from transformers.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
 from transformers.dependency_versions_check import dep_version_check
 from transformers.modelcard import TrainingSummary
 from transformers.modeling_utils import PreTrainedModel, load_sharded_checkpoint, unwrap_model
@@ -88,10 +82,6 @@ from transformers.trainer_callback import (
     TrainerControl,
     TrainerState,
 )
-# Hàm deepspeed_init không còn import được trực tiếp, ta tạo hàm giả
-def deepspeed_init(*args, **kwargs):
-    return None
-# -----------------------------------------
 from transformers.trainer_pt_utils import (
     DistributedLengthGroupedSampler,
     DistributedSamplerWithLoop,
@@ -124,33 +114,21 @@ from transformers.trainer_utils import (
     IntervalStrategy,
     PredictionOutput,
     RemoveColumnsCollator,
+    ShardedDDPOption,
     TrainerMemoryTracker,
     TrainOutput,
     default_compute_objective,
+    default_hp_space,
     denumpify_detensorize,
     enable_full_determinism,
     find_executable_batch_size,
     get_last_checkpoint,
     has_length,
     number_of_arguments,
+    seed_worker,
     set_seed,
     speed_metrics,
 )
-def seed_worker(worker_id):
-    worker_seed = torch.initial_seed() % 2**32
-    np.random.seed(worker_seed)
-    random.seed(worker_seed)
-# --- THÊM DÒNG NÀY ---
-default_hp_space = {}
-# ---------------------
-# --- THÊM ĐOẠN CODE NÀY ĐỂ SỬA LỖI ---
-class ShardedDDPOption:
-    SIMPLE = "simple"
-    ZERO_DP_2 = "zero_dp_2"
-    ZERO_DP_3 = "zero_dp_3"
-    OFFLOAD = "offload"
-    AUTO_WRAP = "auto_wrap"
-# -------------------------------------
 from transformers.training_args import OptimizerNames, ParallelMode, TrainingArguments
 from transformers.utils import (
     CONFIG_NAME,
@@ -165,11 +143,10 @@ from transformers.utils import (
     is_sagemaker_dp_enabled,
     is_sagemaker_mp_enabled,
     is_torch_tensorrt_fx_available,
+    is_torch_tpu_available,
     is_torchdynamo_available,
     logging,
 )
-def is_torch_tpu_available(check_device=True):
-    return False
 from transformers.utils.generic import ContextManagers
 
 
@@ -1115,8 +1092,8 @@ class Trainer:
         if args.optim == OptimizerNames.ADAFACTOR:
             optimizer_cls = Adafactor
             optimizer_kwargs.update({"scale_parameter": False, "relative_step": False})
-        elif args.optim == "adamw_hf" or args.optim == OptimizerNames.ADAMW_TORCH:
-            from torch.optim import AdamW
+        elif args.optim == OptimizerNames.ADAMW_HF:
+            from transformers.optimization import AdamW
 
             optimizer_cls = AdamW
             optimizer_kwargs.update(adam_kwargs)
@@ -1696,9 +1673,7 @@ class Trainer:
         self._total_loss_scalar = 0.0
         self._globalstep_last_logged = self.state.global_step
         model.zero_grad()
-        # PATCH: Alias evaluation_strategy to eval_strategy for newer transformers versions
-        if not hasattr(args, "eval_strategy") and hasattr(args, "evaluation_strategy"):
-            args.eval_strategy = args.evaluation_strategy
+
         self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
 
         # Skip the first epochs_trained epochs to get the random state of the dataloader at the right point.

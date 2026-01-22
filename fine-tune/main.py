@@ -14,8 +14,7 @@ import transformers
 import numpy as np
 from dataclasses import dataclass, field
 from typing import Optional
-from datasets import load_dataset, load_from_disk
-from evaluate import load as load_metric
+from datasets import load_dataset, load_metric, load_from_disk
 from data_interface.dataset import AMR2TextDataSet, AMRParsingDataSet, DataCollatorForAMR2Text, DataCollatorForAMRParsing
 from model_interface.modeling_bart import BartForConditionalGeneration
 from model_interface.tokenization_bart import AMRBartTokenizer
@@ -36,7 +35,7 @@ from transformers import (
     EarlyStoppingCallback,
 )
 from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version, is_offline_mode
+from transformers.utils import check_min_version, is_offline_mode, send_example_telemetry
 from transformers.utils.versions import require_version
 from seq2seq_trainer import Seq2SeqTrainer
 import pdb
@@ -450,7 +449,7 @@ def main():
             checkpoint = training_args.resume_from_checkpoint
         elif last_checkpoint is not None:
             checkpoint = last_checkpoint
-        trainer.is_deepspeed_enabled = training_args.deepspeed
+        
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
         # trainer.save_model()  # Saves the tokenizer too for easy upload
 

@@ -4,7 +4,7 @@ RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Dataset=LDC2020
 Dataset=ViAMR
 
-BasePath=/content/AMRBART  # change dir here to the project path
+BasePath=/content/AMRBART    # change dir here to the project path
 DataPath=/content/AMRBART/data/ViAMR/$Dataset  # change dir here to the path of dfs_NLR and dfs_NRL data
 
 ModelCate=AMRBART-large  # our backbone model is AMRBART，you can also change it to others e.g. SPRING, BART.
@@ -50,7 +50,7 @@ python3 -u main.py \
     --unified_input True \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 2 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 2 \
     --learning_rate $lr \
     --optim "adamw_hf" \
     --lr_scheduler_type "polynomial" \
