@@ -1623,7 +1623,8 @@ class BartForConditionalGeneration(BartPretrainedModel):
             inputs = inputs_kwarg
 
         # 3. models with `input_ids` can also make use of `inputs_embeds`
-        if self._can_retrieve_inputs_from_name(inputs, "inputs_embeds", model_kwargs):
+        # if self._can_retrieve_inputs_from_name(inputs, "inputs_embeds", model_kwargs):
+        if "inputs_embeds" in model_kwargs:
             inputs, input_name = model_kwargs["inputs_embeds"], "inputs_embeds"
 
         # 4. Only encoder-decoder models can have non `input_ids` input format
