@@ -17,7 +17,7 @@ BACKOFF = penman.Graph(
 
 def fix_empty_concepts_in_amr_string(amr_string: str) -> str:
     """Replace empty concepts like ( z / ) with placeholder."""
-    pattern = re.compile(r"\(\s*([a-z]\d*)\s*/\s*\)")
+    pattern = re.compile(r"\(\s*([a-z]\d+)\s*/\s*\)")
     return pattern.sub(r"( \1 / amr-unknown )", amr_string)
 
 
