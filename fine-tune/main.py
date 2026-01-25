@@ -39,7 +39,14 @@ from transformers.utils import check_min_version, is_offline_mode, send_example_
 from transformers.utils.versions import require_version
 from seq2seq_trainer import Seq2SeqTrainer
 import pdb
+from transformers import TrainerCallback
+import gc
 
+class MemoryCleanupCallback(TrainerCallback):
+    def on_step_end(self, args, state, control, **kwargs):
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 # check_min_version("4.21.0.dev0")
 
@@ -428,6 +435,7 @@ def main():
         return result
     
     es_callback = EarlyStoppingCallback(early_stopping_patience=training_args.early_stopping)
+    memory_callback = MemoryCleanupCallback()
     training_args.max_target_length = data_args.max_target_length
     
     compute_metrics = compute_metrics_generation if training_args.task == "amr2text" else compute_metrics_parsing
@@ -438,7 +446,7 @@ def main():
         eval_dataset=eval_dataset if training_args.do_eval else None,
         tokenizer=tokenizer,
         data_collator=data_collator,
-        callbacks=[es_callback],
+        callbacks=[es_callback, memory_callback],
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
 
