@@ -48,9 +48,9 @@ python3 -u main.py \
     --overwrite_output_dir \
     --overwrite_cache True \
     --unified_input True \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 2 \
-    --gradient_accumulation_steps 2 \
+    --per_device_train_batch_size 8 \
+    --per_device_eval_batch_size 16 \
+    --gradient_accumulation_steps 4 \
     --learning_rate $lr \
     --optim "adamw_hf" \
     --lr_scheduler_type "polynomial" \
