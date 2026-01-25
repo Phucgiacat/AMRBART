@@ -85,5 +85,5 @@ python3 -u main.py \
     --greater_is_better True \
     --do_predict \
     --ddp_find_unused_parameters False \
-    --report_to "tensorboard" \
+    --report_to "none" \
     --dataloader_pin_memory True 2>&1 | tee $OutputDir/run.log
