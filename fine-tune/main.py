@@ -378,8 +378,14 @@ def main():
                 idx += 1
         
         # print("Before Penman Encoding")
+        for gps in graphs:
+            for gp in gps:
+                # Replace empty instance values with placeholder
+                for i, triple in enumerate(gp.triples):
+                    if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
+                        gp.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
+        
         pieces = [penman.encode(g[0]) for g in graphs]
-        pieces = [postprocessing.fix_empty_concepts_in_amr_string(p) for p in pieces]
         output_prediction_file = f"{training_args.output_dir}/val_outputs/{prefix}_generated_predictions_{global_step}.txt"
         # write predictions and targets for later rouge evaluation.
         with open(output_prediction_file, "w") as p_writer:
