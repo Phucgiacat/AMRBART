@@ -15,10 +15,34 @@ BACKOFF = penman.Graph(
 )
 
 
-# def fix_empty_concepts_in_amr_string(amr_string: str) -> str:
-#     """Replace empty concepts like ( z / ) with placeholder."""
-#     pattern = re.compile(r"\(\s*([a-z]\d*)\s*/\s*\)")
-#     return pattern.sub(r"( \1 / amr-unknown )", amr_string)
+def fix_empty_concepts_in_amr_string(amr_string: str, placeholder: str = "amr-unknown") -> str:
+    pattern = re.compile(r"\(\s*([^\s/()]+)\s*/\s*\)")
+    return pattern.sub(r"( \1 / " + placeholder + " )", amr_string)
+
+
+def dedup_variables_in_amr_string(amr_string: str) -> str:
+    """Ensure variable names are unique within one AMR string."""
+    decl = re.compile(r"\(\s*([a-z]\d+)\s*/")
+    counts = Counter()
+    for m in decl.finditer(amr_string):
+        counts[m.group(1)] += 1
+
+    if all(v <= 1 for v in counts.values()):
+        return amr_string
+
+    seen = Counter()
+    token = re.compile(r"\b([a-z]\d+)\b")
+
+    def repl(match):
+        v = match.group(1)
+        if counts[v] <= 1:
+            return v
+        seen[v] += 1
+        if seen[v] == 1:
+            return v
+        return f"{v}_{seen[v] - 1}"
+
+    return token.sub(repl, amr_string)
 
 
 def token_processing(tok):
