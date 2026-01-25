@@ -321,6 +321,8 @@ def _reconstruct_graph_from_nodes(nodes, backreferences):
                 src_node = "thing"
 
         if src_node is not None:
+            if isinstance(src_node, str) and src_node.strip() == "":
+                src_node = "amr-unknown"
             src_node = str(src_node)
             src_var = src_node[0].lower()
             if not src_var not in "abcdefghijklmnopqrstuvwxyz":
@@ -400,6 +402,8 @@ def _reconstruct_graph_from_nodes(nodes, backreferences):
                 trg_var_i = ni
                 variable2index[trg_var] = trg_var_i
                 index2variable[trg_var_i] = trg_var
+                if isinstance(n, str) and n.strip() == "":
+                    n = "amr-unknown"
                 triple = penman.Triple(trg_var, ":instance", n)
                 if triple not in triples_added:
                     triples.append(triple)
