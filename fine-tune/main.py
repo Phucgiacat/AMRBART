@@ -20,6 +20,7 @@ from model_interface.modeling_bart import BartForConditionalGeneration
 from model_interface.tokenization_bart import AMRBartTokenizer
 from common.options import DataTrainingArguments, ModelArguments, Seq2SeqTrainingArguments
 from common.utils import smart_emb_init, calculate_smatch
+from common import postprocessing
 from filelock import FileLock
 from transformers import (
     AutoConfig,
@@ -378,6 +379,7 @@ def main():
         
         # print("Before Penman Encoding")
         pieces = [penman.encode(g[0]) for g in graphs]
+        pieces = [postprocessing.fix_empty_concepts_in_amr_string(p) for p in pieces]
         output_prediction_file = f"{training_args.output_dir}/val_outputs/{prefix}_generated_predictions_{global_step}.txt"
         # write predictions and targets for later rouge evaluation.
         with open(output_prediction_file, "w") as p_writer:
