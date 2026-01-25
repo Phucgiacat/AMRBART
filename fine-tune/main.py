@@ -384,13 +384,13 @@ def main():
             p_writer.write("\n\n".join(pieces))
         try:
             smatch_score = calculate_smatch(
-                data_args.data_dir + f"/{prefix}-gold.amr", output_prediction_file
+                data_args.data_dir + f"_dfs_NLR/{prefix}-gold.amr", output_prediction_file
             )
         except:
             smatch_score = {"smatch": 0.0}
         
-        path_____ = data_args.data_dir + f"/{prefix}-gold.amr"
-        print(path_____)
+        # path_____ = data_args.data_dir + f"_dfs_NLR/{prefix}-gold.amr"
+        # print(path_____)
         print(smatch_score)
         result = {"smatch":smatch_score["smatch"]}
         prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
