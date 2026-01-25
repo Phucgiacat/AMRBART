@@ -2,14 +2,14 @@ export CUDA_VISIBLE_DEVICES=0
 RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Dataset=LDC2020
-Dataset=LDC2017
+Dataset=ViAMR
 
-BasePath=/project/path/AMR_reverse_graph_linearization    # change dir here to the project path
-DataPath=/data/path/$Dataset  # change dir here to the path of dfs_NLR and dfs_NRL data
+BasePath=/content/AMRBART    # change dir here to the project path
+DataPath=/content/AMRBART/data/ViAMR/$Dataset  # change dir here to the path of dfs_NLR and dfs_NRL data
 
 ModelCate=AMRBART-large  # our backbone model is AMRBART，you can also change it to others e.g. SPRING, BART.
 
-MODEL=/The/path/to/fintuned_model # change dir here to the fintuned model
+MODEL=/content/drive/MyDrive/AMRBART-out/checkpoint-1920 # change dir here to the fintuned model
 ModelCache=$BasePath/.cache
 DataCache=$DataPath/.cache/dump-amrparsing
 
@@ -47,8 +47,8 @@ python3 -u main.py \
     --overwrite_output_dir \
     --overwrite_cache True \
     --unified_input True \
-    --per_device_train_batch_size 8 \
-    --per_device_eval_batch_size 16 \
+    --per_device_train_batch_size 4 \
+    --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 4 \
     --learning_rate $lr \
     --optim "adamw_hf" \
