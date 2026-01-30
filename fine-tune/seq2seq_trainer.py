@@ -664,10 +664,17 @@ class Seq2SeqTrainer(Trainer):
 
         # prepare generation inputs
         # some encoder-decoder models can have varying encoder's and thus varying model input names
+        generation_inputs = None
         if hasattr(self.model, "encoder") and self.model.encoder.main_input_name != self.model.main_input_name:
-            generation_inputs = inputs[self.model.encoder.main_input_name]
-        else:
-            generation_inputs = inputs[self.model.main_input_name]
+            generation_inputs = inputs.get(self.model.encoder.main_input_name, None)
+        if generation_inputs is None:
+            generation_inputs = inputs.get(self.model.main_input_name, None)
+        if generation_inputs is None:
+            generation_inputs = inputs.get("input_ids", None)
+        if generation_inputs is None:
+            generation_inputs = inputs.get("input_ids_dfs_NRL", None)
+        if generation_inputs is None:
+            raise ValueError(f"No input ids found for generation. Available keys: {list(inputs.keys())}")
         
         generated_tokens = self.model.generate(
             generation_inputs,
