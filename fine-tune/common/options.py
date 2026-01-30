@@ -235,6 +235,10 @@ class DataTrainingArguments:
             )
         },
     )
+    predict_without_label: bool = field(
+        default=False,
+        metadata={"help": "Whether to predict without ground-truth labels (for inference only)."}
+    )
 
     def __post_init__(self):
         if self.dataset_name is None and self.train_file is None and self.validation_file is None:

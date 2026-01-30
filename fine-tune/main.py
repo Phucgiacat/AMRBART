@@ -283,14 +283,19 @@ def main():
         max_target_length = data_args.val_max_target_length
         if "test" not in raw_datasets.datasets:
             raise ValueError("--do_predict requires a test dataset")
+        
         predict_dataset = raw_datasets.datasets["test"]
         if data_args.max_predict_samples is not None:
             max_predict_samples = min(len(predict_dataset), data_args.max_predict_samples)
             predict_dataset = predict_dataset.select(range(max_predict_samples))
         if data_args.overwrite_cache or not os.path.exists(data_args.data_cache_dir + "/test"):
             with training_args.main_process_first(desc="prediction dataset map pre-processing"):
+                if data_args.predict_without_label:
+                    tokenize_fn = raw_datasets.datasets.tokenize_function_for_predict
+                else:
+                    tokenize_fn = raw_datasets.tokenize_function
                 predict_dataset = predict_dataset.map(
-                    raw_datasets.tokenize_function,
+                    tokenize_fn,
                     batched=True,
                     num_proc=data_args.preprocessing_num_workers,
                     remove_columns=column_names,

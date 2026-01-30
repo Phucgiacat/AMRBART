@@ -4,12 +4,12 @@ RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Dataset=examples
 Dataset=ViAMR
 
-BasePath=/content/AMRBART                    # change dir here to the project path
-DataPath=/content/AMRBART/data/ViAMR/$Dataset  # change dir here to the path of test data
+BasePath=/content/AMRBART                    
+DataPath=/content/AMRBART/data/ViAMR/$Dataset  
 
 ModelCate=AMRBART-large
 
-MODEL=${1:-phucgiacat/ViAMR-BART-Large-V1}  # default to your trained model if no arg provided
+MODEL=${1:-phucgiacat/ViAMR-BART-Large-V1}
 ModelCache=$BasePath/.cache
 DataCache=$DataPath/.cache/dump-amrparsing
 
@@ -34,11 +34,10 @@ if [ ! -d ${DataCache} ];then
   mkdir -p ${DataCache}
 fi
 
-# torchrun --nnodes=1 --nproc_per_node=1 --max_restarts=0 --rdzv_id=1 --rdzv_backend=c10d main.py \
 python3 -u main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file $DataPath/test.jsonl \
+    --test_file $DataPath/Data4Parsing.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
@@ -53,6 +52,7 @@ python3 -u main.py \
     --generation_max_length 1024 \
     --generation_num_beams 5 \
     --predict_with_generate \
+    --predict_without_label \
     --smart_init False \
     --use_fast_tokenizer False \
     --logging_dir $OutputDir/logs \
@@ -62,6 +62,8 @@ python3 -u main.py \
     --dataloader_num_workers 8 \
     --eval_dataloader_num_workers 2 \
     --include_inputs_for_metrics \
+    --do_train False \
+    --do_eval False \
     --do_predict \
     --ddp_find_unused_parameters False \
     --report_to "none" \

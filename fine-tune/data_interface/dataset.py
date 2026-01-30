@@ -59,37 +59,74 @@ class AMRParsingDataSet(Dataset):
         column_names = self.datasets["train"].column_names
         print("datasets:", self.datasets)
         print("colums:", column_names)
-    
+        ## thêm load for predict dataset if needed
+        self.args = args
+
+    def tokenize_function_for_predict(self, examples):
+        txt = examples["src"]  # CHỈ có text input
+        
+        raw_txt_ids = self.tokenizer(
+            txt, max_length=self.max_tgt_length, padding=False, truncation=True
+        )["input_ids"]
+        
+        if self.unified_input:
+            txt_ids = [itm[:self.max_tgt_length-3] + [self.tokenizer.amr_bos_token_id, self.tokenizer.mask_token_id, self.tokenizer.amr_eos_token_id] for itm in raw_txt_ids]
+        else:
+            txt_ids = raw_txt_ids
+        
+        return {
+            "input_ids": txt_ids,
+            # KHÔNG có labels, input_ids_dfs_NRL, etc.
+        }
+
     def load_dataset(self, data_path):
         from datasets import Dataset, DatasetDict
         import tqdm
         data_dict = DatasetDict()
+        
+        # THÊM: kiểm tra có đang predict không label không
+        predict_without_label = getattr(self.args, 'predict_without_label', False)
+        
         for ds in ['train', 'val', 'test']:
             data = {}
             src_list = []
-            for seq in ['NLR', 'NRL_generated', 'NRL']:
-                if seq == 'NRL' and ds != 'train':
-                    continue
-                for order in ['dfs']:
-                    tgt_list = []   
-                    file = open(data_path + '_' + order + '_' + seq + '/' + ds + '.jsonl', 'r', encoding='utf8')
-                    
-                    if seq == 'NRL_generated' and ds != 'train':
-                        seq = 'NRL'
-                    
-                    if src_list == []:
-                        for i, line in tqdm.tqdm(enumerate(file.readlines())):
-                            line = eval(line)
-                            src_list.append(line['sent'])
-                            tgt_list.append(line['amr'])
-                        data['src'] = src_list
-                        data['tgt_'+order + '_'+ seq] = tgt_list
-                    else:
-                        for i, line in tqdm.tqdm(enumerate(file.readlines())):
-                            line = eval(line)
-                            assert(line['sent'] == data['src'][i])
-                            tgt_list.append(line['amr'])
-                        data['tgt_'+order + '_'+ seq] = tgt_list
+            
+            # NẾU predict không label VÀ đang ở split test → chỉ đọc src
+            if predict_without_label and ds == 'test':
+                # Đọc file predict (chỉ có 'sent', không có 'amr')
+                predict_file = data_path + '/predict.jsonl'  # hoặc đường dẫn bạn muốn
+                with open(predict_file, 'r', encoding='utf8') as file:
+                    for line in tqdm.tqdm(file.readlines()):
+                        line = eval(line)
+                        src_list.append(line['sent'])
+                data['src'] = src_list
+                # KHÔNG tạo các trường tgt_*
+            else:
+                # Logic CŨ: đọc đầy đủ label
+                for seq in ['NLR', 'NRL_generated', 'NRL']:
+                    if seq == 'NRL' and ds != 'train':
+                        continue
+                    for order in ['dfs']:
+                        tgt_list = []   
+                        file = open(data_path + '_' + order + '_' + seq + '/' + ds + '.jsonl', 'r', encoding='utf8')
+                        
+                        if seq == 'NRL_generated' and ds != 'train':
+                            seq = 'NRL'
+                        
+                        if src_list == []:
+                            for i, line in tqdm.tqdm(enumerate(file.readlines())):
+                                line = eval(line)
+                                src_list.append(line['sent'])
+                                tgt_list.append(line['amr'])
+                            data['src'] = src_list
+                            data['tgt_'+order + '_'+ seq] = tgt_list
+                        else:
+                            for i, line in tqdm.tqdm(enumerate(file.readlines())):
+                                line = eval(line)
+                                assert(line['sent'] == data['src'][i])
+                                tgt_list.append(line['amr'])
+                            data['tgt_'+order + '_'+ seq] = tgt_list
+            
             data_dict[ds if ds != 'val' else 'validation'] = Dataset.from_dict(data)
         return data_dict
 
@@ -188,14 +225,16 @@ class DataCollatorForAMRParsing:
     label_pad_token_id: int = -100
 
     def __call__(self, features):
-        
-        padding_func(
-            features,
-            padding_side=self.tokenizer.padding_side,
-            pad_token_id=self.label_pad_token_id,
-            key_list = ["labels", "input_ids_dfs_NRL", "input_ids_dfs_NRL_generated"] if "input_ids_dfs_NRL_generated" in features[0].keys() else ["labels", "input_ids_dfs_NRL"],
-            pad_to_multiple_of=self.pad_to_multiple_of,
-        )
+        has_labels = "labels" in features[0]
+
+        if has_labels:
+            padding_func(
+                features,
+                padding_side=self.tokenizer.padding_side,
+                pad_token_id=self.label_pad_token_id,
+                key_list = ["labels", "input_ids_dfs_NRL", "input_ids_dfs_NRL_generated"] if "input_ids_dfs_NRL_generated" in features[0].keys() else ["labels", "input_ids_dfs_NRL"],
+                pad_to_multiple_of=self.pad_to_multiple_of,
+            )
         
         features = self.tokenizer.pad(
             features,
@@ -205,27 +244,34 @@ class DataCollatorForAMRParsing:
             return_tensors="pt",
         )
 
-        # prepare decoder_input_ids
-        features["decoder_input_ids"] = shift_tokens_right(
-            features["labels"],
-            pad_token_id=self.tokenizer.pad_token_id,
-            decoder_start_token_id=self.tokenizer.amr_bos_token_id,
-        )
+        if has_labels:
+            # prepare decoder_input_ids
+            features["decoder_input_ids"] = shift_tokens_right(
+                features["labels"],
+                pad_token_id=self.tokenizer.pad_token_id,
+                decoder_start_token_id=self.tokenizer.amr_bos_token_id,
+            )
 
-        if "input_ids_dfs_NRL_generated" in features.keys():
-            return {
-                "input_ids": features["input_ids"],
-                "input_ids_dfs_NRL": features["input_ids_dfs_NRL"],
-                "input_ids_dfs_NRL_generated": features["input_ids_dfs_NRL_generated"],
-                "labels": features["labels"],
-                "decoder_input_ids": features["decoder_input_ids"],
-            }
+            if "input_ids_dfs_NRL_generated" in features.keys():
+                return {
+                    "input_ids": features["input_ids"],
+                    "input_ids_dfs_NRL": features["input_ids_dfs_NRL"],
+                    "input_ids_dfs_NRL_generated": features["input_ids_dfs_NRL_generated"],
+                    "labels": features["labels"],
+                    "decoder_input_ids": features["decoder_input_ids"],
+                }
+            else:
+                return {
+                    "input_ids": features["input_ids"],
+                    "input_ids_dfs_NRL": features["input_ids_dfs_NRL"],
+                    "labels": features["labels"],
+                    "decoder_input_ids": features["decoder_input_ids"],
+                }    
         else:
+            # Trường hợp predict không label
             return {
                 "input_ids": features["input_ids"],
-                "input_ids_dfs_NRL": features["input_ids_dfs_NRL"],
-                "labels": features["labels"],
-                "decoder_input_ids": features["decoder_input_ids"],
+                # KHÔNG có labels, decoder_input_ids, etc.
             }
         
 
