@@ -291,7 +291,7 @@ def main():
         if data_args.overwrite_cache or not os.path.exists(data_args.data_cache_dir + "/test"):
             with training_args.main_process_first(desc="prediction dataset map pre-processing"):
                 if data_args.predict_without_label:
-                    tokenize_fn = raw_datasets.datasets.tokenize_function_for_predict
+                    tokenize_fn = raw_datasets.tokenize_function_for_predict
                 else:
                     tokenize_fn = raw_datasets.tokenize_function
                 predict_dataset = predict_dataset.map(
