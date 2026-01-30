@@ -55,12 +55,12 @@ class AMRParsingDataSet(Dataset):
         # print("datafiles:", data_files)
         print("Dataset cache dir:", self.cache_dir)
         # exit()
+        self.args = args
         self.datasets = self.load_dataset(args.data_dir)
         column_names = self.datasets["train"].column_names
         print("datasets:", self.datasets)
         print("colums:", column_names)
         ## thêm load for predict dataset if needed
-        self.args = args
 
     def tokenize_function_for_predict(self, examples):
         txt = examples["src"]  # CHỈ có text input
