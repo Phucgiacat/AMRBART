@@ -76,7 +76,7 @@ class AMRParsingDataSet(Dataset):
         
         return {
             "input_ids": txt_ids,
-            # KHÔNG có labels, input_ids_dfs_NRL, etc.
+            "input_ids_dfs_NRL": txt_ids,
         }
 
     def load_dataset(self, data_path):
@@ -235,7 +235,16 @@ class DataCollatorForAMRParsing:
                 key_list = ["labels", "input_ids_dfs_NRL", "input_ids_dfs_NRL_generated"] if "input_ids_dfs_NRL_generated" in features[0].keys() else ["labels", "input_ids_dfs_NRL"],
                 pad_to_multiple_of=self.pad_to_multiple_of,
             )
-        
+        else:
+            if "input_ids_dfs_NRL" in features[0]:
+                padding_func(
+                    features,
+                    padding_side=self.tokenizer.padding_side,
+                    pad_token_id=self.tokenizer.pad_token_id,
+                    key_list=["input_ids_dfs_NRL"],
+                    pad_to_multiple_of=self.pad_to_multiple_of,
+                )
+
         features = self.tokenizer.pad(
             features,
             padding=self.padding,
@@ -271,7 +280,8 @@ class DataCollatorForAMRParsing:
             # Trường hợp predict không label
             return {
                 "input_ids": features["input_ids"],
-                # KHÔNG có labels, decoder_input_ids, etc.
+                "attention_mask": features.get("attention_mask", None),
+                "input_ids_dfs_NRL": features.get("input_ids_dfs_NRL", None),
             }
         
 
