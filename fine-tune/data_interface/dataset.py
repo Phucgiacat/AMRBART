@@ -94,7 +94,7 @@ class AMRParsingDataSet(Dataset):
             # NẾU predict không label VÀ đang ở split test → chỉ đọc src
             if predict_without_label and ds == 'test':
                 # Đọc file predict (chỉ có 'sent', không có 'amr')
-                predict_file = data_path + '/predict.jsonl'  # hoặc đường dẫn bạn muốn
+                predict_file = self.args.test_file  # hoặc đường dẫn bạn muốn
                 with open(predict_file, 'r', encoding='utf8') as file:
                     for line in tqdm.tqdm(file.readlines()):
                         line = eval(line)
