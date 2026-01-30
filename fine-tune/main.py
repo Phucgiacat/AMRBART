@@ -292,13 +292,15 @@ def main():
             with training_args.main_process_first(desc="prediction dataset map pre-processing"):
                 if data_args.predict_without_label:
                     tokenize_fn = raw_datasets.tokenize_function_for_predict
+                    remove_cols = [c for c in raw_datasets["test"].column_names if c != "src"]
                 else:
                     tokenize_fn = raw_datasets.tokenize_function
+                    remove_cols = column_names
                 predict_dataset = predict_dataset.map(
                     tokenize_fn,
                     batched=True,
                     num_proc=data_args.preprocessing_num_workers,
-                    remove_columns=column_names,
+                    remove_columns=remove_cols,
                     load_from_cache_file=not data_args.overwrite_cache,
                     desc="Running tokenizer on prediction dataset",
                 )
