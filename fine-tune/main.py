@@ -80,6 +80,10 @@ def main():
     # Normalize torch.distributed.launch argument name to what HfArgumentParser expects.
     if any(arg.startswith("--local-rank") for arg in sys.argv):
         sys.argv = [arg.replace("--local-rank", "--local_rank") for arg in sys.argv]
+    
+    # For torchrun: add --local_rank from LOCAL_RANK environment variable if not already present
+    if not any(arg.startswith("--local_rank") for arg in sys.argv) and "LOCAL_RANK" in os.environ:
+        sys.argv.append(f"--local_rank={os.environ['LOCAL_RANK']}")
 
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
