@@ -37,7 +37,6 @@ fi
 python3 -u main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --_n_gpu 2 \
     --test_file /kaggle/input/data4parsing/train.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
