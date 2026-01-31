@@ -34,7 +34,12 @@ if [ ! -d ${DataCache} ];then
   mkdir -p ${DataCache}
 fi
 
-python3 -u main.py \
+export CUDA_VISIBLE_DEVICES=0,1
+# ...existing code...
+
+python3 -m torch.distributed.launch \
+    --nproc_per_node=2 \
+    main.py \
     --data_dir $DataPath \
     --task "text2amr" \
     --test_file /kaggle/input/data4parsing/train.jsonl \
