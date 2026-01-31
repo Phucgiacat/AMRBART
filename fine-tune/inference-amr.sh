@@ -4,8 +4,8 @@ RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Dataset=examples
 Dataset=ViAMR
 
-BasePath=/content/AMRBART                    
-DataPath=/content/AMRBART/data/ViAMR/$Dataset  
+BasePath=/kaggle/working/AMRBART                    
+DataPath=/kaggle/working/AMRBART/data/ViAMR/$Dataset  
 
 ModelCate=AMRBART-large
 
@@ -37,7 +37,7 @@ fi
 python3 -u main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file $DataPath/Data4Parsing.jsonl \
+    --test_file /kaggle/input/data4parsing/train.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
