@@ -35,10 +35,16 @@ if [ ! -d ${DataCache} ];then
 fi
 
 export CUDA_VISIBLE_DEVICES=0,1
+# Increase NCCL timeouts for long generation and enable async error handling
+export NCCL_ASYNC_ERROR_HANDLING=1
+export NCCL_BLOCKING_WAIT=1
+export NCCL_TIMEOUT=1800
+
+NPROC_PER_NODE=${NPROC_PER_NODE:-1}
 # ...existing code...
 
-python3 -m torch.distributed.launch \
-    --nproc_per_node=2 \
+torchrun \
+  --nproc_per_node=$NPROC_PER_NODE \
     main.py \
     --data_dir $DataPath \
     --task "text2amr" \
