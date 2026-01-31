@@ -77,6 +77,10 @@ MULTILINGUAL_TOKENIZERS = [
 
 
 def main():
+    # Normalize torch.distributed.launch argument name to what HfArgumentParser expects.
+    if any(arg.startswith("--local-rank") for arg in sys.argv):
+        sys.argv = [arg.replace("--local-rank", "--local_rank") for arg in sys.argv]
+
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
