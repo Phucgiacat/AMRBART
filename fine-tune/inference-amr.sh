@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=0
 RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Dataset=examples
@@ -34,17 +34,9 @@ if [ ! -d ${DataCache} ];then
   mkdir -p ${DataCache}
 fi
 
-export CUDA_VISIBLE_DEVICES=0,1
-# Use PyTorch-compatible NCCL environment variables (TORCH_NCCL_* prefix)
-export TORCH_NCCL_ASYNC_ERROR_HANDLING=1
-export TORCH_NCCL_BLOCKING_WAIT=1
+export CUDA_VISIBLE_DEVICES=0
 
-NPROC_PER_NODE=${NPROC_PER_NODE:-2}
-# ...existing code...
-
-torchrun \
-  --nproc_per_node=$NPROC_PER_NODE \
-    main.py \
+python3 main.py \
     --data_dir $DataPath \
     --task "text2amr" \
     --test_file /kaggle/input/data4parsing/val.jsonl \
@@ -55,8 +47,7 @@ torchrun \
     --model_name_or_path $MODEL \
     --overwrite_output_dir \
     --unified_input True \
-    --ddp_timeout 7200 \
-    --per_device_eval_batch_size 2 \
+    --per_device_eval_batch_size 1 \
     --max_source_length 400 \
     --max_target_length 1024 \
     --val_max_target_length 1024 \
