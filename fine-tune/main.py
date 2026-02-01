@@ -559,11 +559,60 @@ def main():
                     skip_special_tokens=True,
                     clean_up_tokenization_spaces=False,
                 )
+                
+                # Lưu linearized predictions (original format)
                 output_prediction_file = os.path.join(
                     training_args.output_dir, "generated_predictions.txt"
                 )
                 with open(output_prediction_file, "w") as writer:
                     writer.write("\n".join(predictions))
+                
+                # Chuyển đổi sang PENMAN format nếu là task text2amr
+                if training_args.task == "text2amr":
+                    # Lấy câu gốc từ input
+                    input_texts = []
+                    if training_args.include_inputs_for_metrics and hasattr(predict_results, 'inputs'):
+                        decoded_inputs = tokenizer.batch_decode(
+                            predict_results.inputs,
+                            skip_special_tokens=True,
+                            clean_up_tokenization_spaces=False,
+                        )
+                        input_texts = [txt.replace("<AMR>", '').replace("</AMR>", '').strip() for txt in decoded_inputs]
+                    
+                    # Chuyển đổi sang PENMAN
+                    from common.penman_interface import parse_string_to_graph
+                    graphs = []
+                    for idx, pred in enumerate(predictions):
+                        try:
+                            graph = parse_string_to_graph(pred)
+                            # Thêm metadata
+                            metadata = {
+                                "id": str(idx),
+                                "annotator": "bart-amr",
+                                "snt": input_texts[idx] if idx < len(input_texts) else ""
+                            }
+                            graph.metadata = metadata
+                            
+                            # Fix empty concepts
+                            for i, triple in enumerate(graph.triples):
+                                if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
+                                    graph.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
+                            
+                            txt = penman.encode(graph)
+                            txt = postprocessing.fix_empty_concepts_in_amr_string(txt)
+                            txt = postprocessing.dedup_variables_in_amr_string(txt)
+                            graphs.append(txt)
+                        except Exception as e:
+                            logger.warning(f"Failed to parse graph {idx}: {e}")
+                            # Fallback: sử dụng prediction gốc
+                            graphs.append(f"# ::id {idx}\n# ::annotator bart-amr\n# ::snt {input_texts[idx] if idx < len(input_texts) else ''}\n{pred}")
+                    
+                    # Lưu PENMAN format
+                    output_penman_file = os.path.join(
+                        training_args.output_dir, "generated_predictions_penman.txt"
+                    )
+                    with open(output_penman_file, "w") as writer:
+                        writer.write("\n\n".join(graphs))
     return results
 
 

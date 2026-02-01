@@ -1,0 +1,1841 @@
+# ::id 0
+# ::annotator bart-amr
+# ::snt Chương 1.
+(z0 / chương
+    :mod 1)
+
+# ::id 1
+# ::annotator bart-amr
+# ::snt Có một lần, khi tôi lên sáu tuổi, tôi đã nhìn thấy một bức tranh tuyệt_diệu trong một cuốn sách có tên là " Những câu_chuyện thực_tế từ thiên_nhiên " viết về rừng nguyên_sinh.
+(z0 / nhìn_thấy
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / câu_chuyện
+              :mod (z3 / thực_tế)
+              :ARG0-of (z4 / thiên_nhiên
+                           :ARG1 (z5 / viết_về
+                                     :mod (z6 / rừng)
+                                     :mod (z7 / nguyên_sinh))))
+    :time (z8 / có_lần
+              :mod (z9 / một))
+    :time (z10 / lên_sáu
+               :mod (z11 / tuổi))
+    :tense (z12 / đã))
+
+# ::id 2
+# ::annotator bart-amr
+# ::snt Đó là một bức tranh về một con trăn đang nuốt một con thú.
+(z0 / bức_tranh
+    :domain (z1 / đó)
+    :ARG1-of (z2 / nuốt
+                 :ARG0 (z3 / trăn
+                           :quant 1
+                           :mod (z4 / thú))
+                 :tense (z5 / đang)))
+
+# ::id 3
+# ::annotator bart-amr
+# ::snt Đây là một bản_sao của bức vẽ.
+(z0 / bản_sao
+    :ARG0 (z1 / bức_vẽ)
+    :ARG1 (z2 / đây))
+
+# ::id 4
+# ::annotator bart-amr
+# ::snt Trong cuốn sách đó có viết : " con Trăn_nuốt con mồi nguyên con mà không cần nhai nó. "
+(z0 / viết
+    :ARG0 (z1 / trăn_nuốt)
+    :ARG1 (z2 / cần
+              :polarity -
+              :ARG0 z1
+              :ARG1 (z3 / nhai
+                        :ARG0 z1
+                        :ARG1 (z4 / nó)))
+    :time (z5 / cuốn_sách
+              :mod (z6 / đó)))
+
+# ::id 5
+# ::annotator bart-amr
+# ::snt Sau đó chúng không_thể nhúc_nhích, và chúng ngủ suốt sáu tháng mà chúng cần để tiêu_hóa.
+(z0 / và
+    :op1 (z1 / nhúc_nhích
+             :polarity -
+             :ARG0 (z2 / chúng)
+             :time (z3 / sau_đó))
+    :op2 (z4 / suốt
+             :ARG0 z2
+             :ARG1 (z5 / sáu_tháng))
+    :op3 (z6 / cần
+             :ARG0 z2
+             :ARG1 (z7 / tiêu_hóa
+                       :ARG0 z2)))
+
+# ::id 6
+# ::annotator bart-amr
+# ::snt Khi đó, tôi đã ngẫm_nghĩ sâu_sắc về những chuyến phiêu_lưu nơi rừng rậm.
+(z0 / ngẫm_nghĩ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / sâu_sắc
+              :ARG0 z1
+              :ARG1 (z3 / chuyến_phiêu_lưu
+                        :mod (z4 / nơi_rừng_rậm)))
+    :time (z5 / đó)
+    :tense (z6 / đã))
+
+# ::id 7
+# ::annotator bart-amr
+# ::snt Và sau một_vài công_việc với bút chì màu, tôi đã thành_công trong việc tạo ra bức vẽ đầu_tiên của mình.
+(z0 / và
+    :op2 (z1 / thành_công
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / bút_chì
+                       :mod (z4 / màu))
+             :time (z5 / sau
+                       :op1 (z6 / công_việc
+                                :mod (z7 / một_vài)))
+             :location (z8 / việc
+                           :ARG0-of (z9 / tạo
+                                        :ARG1 (z10 / bức
+                                                   :ARG1-of (z11 / đầu_tiên
+                                                                 :ARG0 (z12 / mình)))))))
+
+# ::id 8
+# ::annotator bart-amr
+# ::snt Bức vẽ số_một của tôi.
+(z0 / vẽ
+    :ARG0 (z1 / bức)
+    :ARG1 (z2 / số_một
+              :poss (z3 / tôi)))
+
+# ::id 9
+# ::annotator bart-amr
+# ::snt Nó trông như thế_này : tôi đã cho những người_lớn xem kiệt_tác của mình, và hỏi họ liệu bức vẽ có làm họ sợ không.
+(z0 / và
+    :op1 (z1 / cho
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / người_lớn
+                       :ARG0-of (z4 / xem
+                                    :ARG1 (z5 / kiệt_tác
+                                              :poss (z6 / mình)))))
+    :op2 (z7 / hỏi
+             :ARG0 z2
+             :ARG1 (z8 / liệu_bức
+                       :ARG0 z2
+                       :ARG1 (z9 / có_làm
+                                 :ARG0 z2
+                                 :ARG1 (z10 / họ)
+                                 :ARG1-of (z11 / sợ
+                                               :polarity -)))))
+
+# ::id 10
+# ::annotator bart-amr
+# ::snt Nhưng họ đã trả_lời : " Làm sợ? "
+(z0 / contrast-01
+    :ARG2 (z1 / trả_lời
+              :ARG0 (z2 / họ)
+              :ARG1 (z3 / làm_sợ
+                        :mode interrogative)
+              :tense (z4 / đã)))
+
+# ::id 11
+# ::annotator bart-amr
+# ::snt Tại_sao bất_kỳ ai_lại nên sợ một chiếc mũ?
+(z0 / bất_kỳ
+    :ARG0 (z1 / ai_lại)
+    :ARG1 (z2 / sợ
+              :ARG0 z1
+              :ARG1 (z3 / chiếc_mũ
+                        :quant 1))
+    :time (z4 / tại_sao)
+    :mode interrogative)
+
+# ::id 12
+# ::annotator bart-amr
+# ::snt Bức vẽ của tôi không phải là hình một chiếc mũ.
+(z0 / phải
+    :polarity -
+    :ARG0 (z1 / bức_vẽ
+              :poss (z2 / tôi))
+    :ARG1 (z3 / hình
+              :ARG0 z1
+              :ARG1 (z4 / chiếc_mũ)))
+
+# ::id 13
+# ::annotator bart-amr
+# ::snt Nó là bức vẽ một con trăn boa đang tiêu_hóa một con voi.
+(z0 / bức
+    :domain (z1 / nó)
+    :tense (z2 / vẽ)
+    :topic (z3 / tiêu_hóa
+               :ARG0 (z4 / trăn_boa)
+               :ARG1 (z5 / voi
+                         :quant 1)
+               :tense (z6 / đang)))
+
+# ::id 14
+# ::annotator bart-amr
+# ::snt Nhưng vì những người_lớn không_thể hiểu được nó, tôi đã vẽ một bức vẽ khác : tôi vẽ phía bên trong của con trăn boa, để những người_lớn có_thể nhìn thấy nó một_cách rõ_ràng.
+(z0 / contrast-01
+    :ARG2 (z1 / vẽ
+              :ARG0 (z2 / tôi)
+              :ARG1 (z3 / vẽ
+                        :ARG0 z2
+                        :ARG1 (z4 / vẽ
+                                  :ARG0 z2
+                                  :ARG1 (z5 / phía_bên
+                                            :ARG0 z2
+                                            :ARG1 (z6 / trăn
+                                                      :mod (z7 / boa)))
+                                  :ARG2 (z8 / người_lớn
+                                            :ARG0-of (z9 / có_thể
+                                                         :ARG1 (z10 / nhìn_thấy
+                                                                    :ARG0 z8
+                                                                    :ARG1 (z11 / rõ_ràng
+                                                                               :quant (z12 / một_cách
+                                                                                           :mod (z13 / rõ_ràng)))))))
+                        :time (z14 / bức_vẽ))))
+
+# ::id 15
+# ::annotator bart-amr
+# ::snt Họ luôn_luôn cần được giải_thích mọi thứ.
+(z0 / luôn_luôn
+    :ARG0 (z1 / họ)
+    :ARG1 (z2 / cần
+              :ARG0 z1
+              :ARG1 (z3 / giải_thích
+                        :ARG0 z1
+                        :ARG1 (z4 / thứ))))
+
+# ::id 16
+# ::annotator bart-amr
+# ::snt Bức vẽ số hai của tôi trông như thế_này : Câu trả_lời của những người_lớn, lần này, là khuyên tôi nên gạt sang một bên những bức vẽ trăn_boa của tôi, dù là từ bên trong hay bên ngoài, và thay vào đó hãy dành tâm_trí cho địa_lý, lịch_sử, toán_học và ngữ_pháp.
+(z0 / vẽ
+    :ARG0 (z1 / bức_vẽ)
+    :ARG1 (z2 / và
+              :op1 (z3 / khuyên
+                       :ARG0 z1
+                       :ARG1 (z4 / gạt
+                                 :ARG0 z1
+                                 :ARG1 (z5 / bên
+                                           :mod (z6 / vẽ)
+                                           :mod (z7 / trăn_boa)
+                                           :poss (z8 / tôi))))
+              :op2 (z9 / từ
+                       :ARG0 z1
+                       :ARG1 (z10 / bên
+                                  :mod (z11 / hay_bên)
+                                  :mod (z12 / ngoài)))
+              :op3 (z13 / dành
+                        :ARG0 z1
+                        :ARG1 (z14 / tâm_trí
+                                   :ARG0 z1
+                                   :ARG1 (z15 / địa_lý)
+                                   :ARG2 (z16 / lịch_sử
+                                              :mod (z17 / toán_học)
+                                              :mod (z18 / ngữ_pháp)))
+                        :time (z19 / thay_vào_đó))))
+
+# ::id 17
+# ::annotator bart-amr
+# ::snt Đó là lý_do vì sao, vào năm lên sáu tuổi, tôi đã từ_bỏ một sự_nghiệp họa_sĩ lộng_lẫy.
+(z0 / từ_bỏ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / sự_nghiệp
+              :mod (z3 / họa_sĩ)
+              :quant 1
+              :mod (z4 / lộng_lẫy))
+    :time (z5 / sao_lên_sáu_tuổi)
+    :tense (z6 / đã)
+    :mod (z7 / lý_do))
+
+# ::id 18
+# ::annotator bart-amr
+# ::snt Tôi đã nản_lòng bởi sự thất_bại của bức vẽ số_một và bức vẽ số hai của mình.
+(z0 / nản_lòng
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / và
+              :op1 (z3 / sự_thất_bại
+                       :ARG0 (z4 / bức_vẽ)
+                       :ARG1 (z5 / số_một))
+              :op2 (z6 / số_một
+                       :ARG0 z4
+                       :ARG1 (z7 / mình)))
+    :tense (z8 / đã))
+
+# ::id 19
+# ::annotator bart-amr
+# ::snt Những người_lớn chẳng bao_giờ tự mình hiểu được điều gì, và thật là mệt_mỏi cho trẻ_con khi cứ phải luôn_luôn và mãi_mãi giải_thích mọi thứ cho họ.
+(z0 / và
+    :op1 (z1 / chẳng_bao_giờ
+             :ARG0 (z2 / người_lớn)
+             :ARG1 (z3 / hiểu
+                       :ARG0 z2
+                       :ARG1 (z4 / điều_gì)))
+    :op2 (z5 / mệt_mỏi
+             :ARG0 z2
+             :ARG1 (z6 / trẻ_con)
+             :time (z7 / phải_luôn_luôn
+                       :ARG0 (z8 / cứ)
+                       :ARG1 (z9 / giải_thích
+                                 :ARG0 z8
+                                 :ARG1 (z10 / mọi_thứ
+                                            :ARG0 z8
+                                            :ARG1 (z11 / họ))))))
+
+# ::id 20
+# ::annotator bart-amr
+# ::snt Thế_là tôi đã chọn một nghề_nghiệp khác, và đã học lái máy_bay.
+(z0 / và
+    :op1 (z1 / chọn
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / nghề_nghiệp
+                       :quant 1
+                       :mod (z4 / khác))
+             :tense (z5 / đã))
+    :op2 (z6 / học
+             :ARG0 z2
+             :ARG1 (z7 / máy_bay)))
+
+# ::id 21
+# ::annotator bart-amr
+# ::snt Tôi đã bay một_ít trên khắp các vùng của thế_giới ; và đúng là địa_lý đã rất hữu_ích đối_với tôi.
+(z0 / và
+    :op1 (z1 / bay
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / vùng
+                       :mod (z4 / thế_giới)
+                       :quant 1)
+             :tense (z5 / đã)
+             :location (z6 / khắp
+                           :mod (z7 / khắp)))
+    :op2 (z8 / địa_lý
+             :domain (z9 / đúng)
+             :degree (z10 / rất)
+             :ARG0-of (z11 / hữu_ích
+                           :ARG1 (z12 / đối_với
+                                      :poss z2))))
+
+# ::id 22
+# ::annotator bart-amr
+# ::snt Chỉ liếc mắt một cái, tôi có_thể phân_biệt Trung_Quốc với Arizona.
+(z0 / có_thể
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / phân_biệt
+              :ARG0 z1
+              :ARG1 (z3 / trung_Quốc)
+              :ARG2 (z4 / state
+                        :wiki "Arizona"
+                        :name (z5 / name
+                                  :op1 "Arizona")))
+    :time (z6 / liếc
+              :ARG0 z1
+              :ARG1 (z7 / cái
+                        :quant 1)))
+
+# ::id 23
+# ::annotator bart-amr
+# ::snt Nếu người ta bị lạc vào ban_đêm, kiến_thức như_vậy thật quý_giá.
+(z0 / kiến_thức
+    :ARG0 (z1 / người_ta)
+    :ARG1 (z2 / quý_giá
+              :degree (z3 / thật))
+    :time (z4 / bị_lạc
+              :ARG0 z1
+              :ARG1 (z5 / ban_đêm)))
+
+# ::id 24
+# ::annotator bart-amr
+# ::snt Trong suốt cuộc_đời này, tôi đã có rất nhiều cuộc gặp_gỡ với rất nhiều người quan_tâm đến những vấn_đề hệ_trọng.
+(z0 / có
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / gặp_gỡ
+              :ARG0 z1
+              :ARG1 (z3 / người
+                        :ARG0-of (z4 / quan_tâm
+                                     :ARG1 (z5 / vấn_đề
+                                               :mod (z6 / hệ_trọng))))
+              :degree (z7 / rất))
+    :location (z8 / cuộc_đời
+                  :mod (z9 / này)
+                  :mod (z10 / suốt)))
+
+# ::id 25
+# ::annotator bart-amr
+# ::snt Tôi đã sống rất nhiều giữa những người_lớn.
+(z0 / sống
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / người_lớn
+              :quant (z3 / nhiều
+                         :degree (z4 / rất)))
+    :tense (z5 / đã))
+
+# ::id 26
+# ::annotator bart-amr
+# ::snt Tôi đã nhìn thấy họ một_cách thân_mật, ở ngay sát cạnh bên.
+(z0 / nhìn
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / thấy
+              :ARG0 z1
+              :ARG1 (z3 / cách_thân_mật
+                        :quant 1)
+              :ARG2 (z4 / họ)
+              :location (z5 / sát_cạnh
+                            :mod (z6 / bên)))
+    :mod (z7 / đã))
+
+# ::id 27
+# ::annotator bart-amr
+# ::snt Và điều đó cũng chẳng cải_thiện mấy ý_kiến của tôi về họ.
+(z0 / và
+    :op2 (z1 / chẳng
+             :ARG0 (z2 / điều_đó)
+             :ARG1 (z3 / cải_thiện
+                       :ARG0 z2
+                       :ARG1 (z4 / ý_kiến
+                                 :poss (z5 / tôi))
+                       :ARG2 (z6 / họ))
+             :tense (z7 / cũng)))
+
+# ::id 28
+# ::annotator bart-amr
+# ::snt Bất_cứ khi nào tôi gặp một người trong số họ có_vẻ sáng_suốt, tôi đều thử làm thí_nghiệm cho người đó xem Bức vẽ Số_Một mà tôi luôn giữ.
+(z0 / gặp
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / người
+              :ARG0-of (z3 / có_vẻ
+                           :ARG1 (z4 / sáng_suốt)))
+    :time (z5 / bất_cứ
+              :ARG0 z1
+              :ARG1 (z6 / thử_làm
+                        :ARG0 z1
+                        :ARG1 (z7 / thí_nghiệm
+                                  :ARG0 z1
+                                  :ARG1 (z8 / người
+                                            :ARG0-of (z9 / xem
+                                                         :ARG1 (z10 / bức_vẽ
+                                                                    :ARG0 z1
+                                                                    :ARG1 (z11 / số_một
+                                                                               :ARG0 z1
+                                                                               :ARG1-of (z12 / luôn_giữ
+                                                                                             :ARG0 z1)))))))))
+
+# ::id 29
+# ::annotator bart-amr
+# ::snt Vì_vậy, tôi sẽ cố_gắng tìm_hiểu xem_liệu đây có phải là một người hiểu_biết thực_sự hay không.
+(z0 / cố_gắng
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / tìm_hiểu
+              :mod (z3 / xem_liệu_đây)
+              :ARG1-of (z4 / phải
+                           :ARG0 (z5 / người_hiểu_biết
+                                     :ARG1-of (z6 / thực_sự
+                                                  :polarity -))))
+    :time (z7 / vì_vậy))
+
+# ::id 30
+# ::annotator bart-amr
+# ::snt Nhưng dù đó là ai đi_nữa, ông ấy hay bà ấy cũng luôn_luôn nói rằng :'Đó là cái mũ '.
+(z0 / contrast-01
+    :ARG2 (z1 / nói
+              :ARG0 (z2 / ông_ấy)
+              :ARG1 (z3 / đi_nữa
+                        :domain (z4 / đó))
+              :ARG2 (z5 / bà_ấy)
+              :manner (z6 / luôn_luôn)
+              :manner (z7 / rằng)))
+
+# ::id 31
+# ::annotator bart-amr
+# ::snt Thế_là tôi sẽ không bao_giờ nói_chuyện với người đó về trăn boa, hay rừng nguyên_sinh, hay những ngôi_sao.
+(z0 / thế_là
+    :ARG1 (z1 / nói_chuyện
+              :polarity -
+              :ARG0 (z2 / tôi)
+              :ARG1 (z3 / người_đó)
+              :ARG2 (z4 / and
+                        :op1 (z5 / trăn_boa)
+                        :op2 (z6 / nguyên_sinh)
+                        :op3 (z7 / ngôi_sao))
+              :tense (z8 / sẽ)))
+
+# ::id 32
+# ::annotator bart-amr
+# ::snt Tôi sẽ hạ mình xuống tới tầm của anh ấy.
+(z0 / hạ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / mình_xuống
+              :ARG0 z1
+              :ARG1 (z3 / tầm
+                        :poss (z4 / anh_ấy)))
+    :tense (z5 / sẽ))
+
+# ::id 33
+# ::annotator bart-amr
+# ::snt Tôi sẽ nói_chuyện với ông ấy về bài bridge, và môn golf, và chính_trị, và cà_vạt.
+(z0 / nói_chuyện
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / ông_ấy)
+    :ARG2 (z3 / và
+              :op1 (z4 / bài_bridge)
+              :op2 (z5 / môn_gia)
+              :op3 (z6 / chính_trị)
+              :op4 (z7 / cà_vạt))
+    :tense (z8 / sẽ))
+
+# ::id 34
+# ::annotator bart-amr
+# ::snt Và người_lớn sẽ hết_sức hài_lòng khi gặp được một người đàn_ông sáng_suốt như_thế.
+(z0 / và
+    :op2 (z1 / hết_sức
+             :ARG0 (z2 / người_lớn)
+             :ARG1 (z3 / hài_lòng)
+             :time (z4 / gặp
+                       :ARG0 z2
+                       :ARG1 (z5 / người_đàn_ông
+                                 :mod (z6 / sáng_suốt
+                                          :degree (z7 / như_thế))))))
+
+# ::id 35
+# ::annotator bart-amr
+# ::snt Chương 2
+(z0 / chương
+    :quant 2)
+
+# ::id 36
+# ::annotator bart-amr
+# ::snt Vì_thế, tôi đã sống cuộc_đời mình cô độc, không có một ai để thực_sự trò_chuyện cùng, cho đến khi tôi gặp tai_nạn máy_bay ở sa_mạc Sahara vào sáu năm trước.
+(z0 / vì_thế
+    :ARG1 (z1 / sống
+              :ARG0 (z2 / tôi)
+              :ARG1 (z3 / cuộc_đời
+                        :ARG0 z2
+                        :ARG1 (z4 / mình_cô
+                                  :mod (z5 / độc))
+                        :ARG1-of (z6 / thực_sự
+                                     :ARG2 (z7 / trò_chuyện
+                                               :mod (z8 / cùng))))
+              :time (z9 / gặp
+                        :ARG0 z2
+                        :ARG1 (z10 / tai_nạn
+                                   :mod (z11 / máy_bay))
+                        :location (z12 / sa_mạc
+                                       :mod (z13 / Sahara))
+                        :time (z14 / sáu_năm
+                                   :mod (z15 / trước)))))
+
+# ::id 37
+# ::annotator bart-amr
+# ::snt Có cái gì đó đã bị hỏng trong động_cơ của tôi.
+(z0 / bị_hỏng
+    :ARG0 (z1 / cái_gì
+              :mod (z2 / đó))
+    :ARG1 (z3 / động_cơ
+              :poss (z4 / tôi))
+    :tense (z5 / đã))
+
+# ::id 38
+# ::annotator bart-amr
+# ::snt Và vì tôi không có thợ_máy hay hành_khách nào đi cùng, tôi đã tự mình thử thực_hiện những việc sửa_chữa khó_khăn đó hoàn_toàn đơn_độc.
+(z0 / và
+    :op2 (z1 / tự_mình
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / thử_thực_hiện
+                       :ARG0 z2
+                       :ARG1 (z4 / việc_sửa_chữa
+                                 :mod (z5 / khó_khăn)
+                                 :mod (z6 / hoàn_toàn
+                                          :mod (z7 / đơn_độc))))
+             :time (z8 / có_thợ_máy
+                       :polarity -
+                       :ARG0 z2
+                       :ARG1 (z9 / hành_khách
+                                 :mod (z10 / nào)
+                                 :mod (z11 / đi_cùng)))))
+
+# ::id 39
+# ::annotator bart-amr
+# ::snt Đó là chuyện sống_còn đối_với tôi : tôi chỉ có vừa đủ nước uống để dùng trong một tuần.
+(z0 / chuyện_sống_còn
+    :ARG0 (z1 / đó)
+    :ARG1 (z2 / đối_với
+              :ARG0 (z3 / tôi)
+              :ARG1 (z4 / nước
+                        :ARG1-of (z5 / uống
+                                     :ARG2 (z6 / dùng
+                                               :ARG0 z3
+                                               :location (z7 / tuần
+                                                             :quant 1))))))
+
+# ::id 40
+# ::annotator bart-amr
+# ::snt Đêm đầu_tiên, thế_là tôi đi ngủ trên cát, cách xa mọi nơi có người ở hàng ngàn dặm.
+(z0 / và
+    :op1 (z1 / đi
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / ngủ)
+             :location (z4 / cát)
+             :time (z5 / đêm_đầu_tiên))
+    :op2 (z6 / xa
+             :ARG0 z2
+             :ARG1 (z7 / người
+                       :ARG0-of (z8 / có
+                                    :ARG1 (z9 / hàng_ngàn
+                                              :mod (z10 / dặm))))))
+
+# ::id 41
+# ::annotator bart-amr
+# ::snt Tôi còn cô_lập hơn cả một thủy_thủ bị đắm tàu trên một chiếc bè giữa đại_dương.
+(z0 / còn
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / cô_lập
+              :ARG0 z1
+              :ARG1 (z3 / thủy_thủ
+                        :mod (z4 / bị_đắm_tàu)
+                        :location (z5 / chiếc_bè
+                                      :mod (z6 / giữa)
+                                      :mod (z7 / đại_dương)))
+              :degree (z8 / hơn)))
+
+# ::id 42
+# ::annotator bart-amr
+# ::snt Vì_vậy, bạn có_thể hình_dung sự ngạc_nhiên của tôi, vào lúc bình_minh, khi tôi bị đánh_thức bởi một giọng nói nhỏ_nhẹ lạ_lùng.
+(z0 / có_thể
+    :ARG0 (z1 / bạn)
+    :ARG1 (z2 / hình_dung
+              :ARG0 z1
+              :ARG1 (z3 / ngạc_nhiên
+                        :poss z1))
+    :time (z4 / vì_vậy)
+    :time (z5 / đánh_thức
+              :ARG0 z1
+              :ARG1 (z6 / nói
+                        :ARG0 z1
+                        :ARG1 (z7 / nhỏ_nhẹ
+                                  :mod (z8 / lạ_lùng)))))
+
+# ::id 43
+# ::annotator bart-amr
+# ::snt Nó nói :'Làm_ơn... vẽ cho tôi một con cừu! '
+(z0 / nói
+    :ARG0 (z1 / nó)
+    :ARG1 (z2 / vẽ
+              :ARG0 z1
+              :ARG1 (z3 / cừu
+                        :quant 1)
+              :ARG2 (z4 / tôi)))
+
+# ::id 44
+# ::annotator bart-amr
+# ::snt Cái gì
+(z0 / cái
+    :mod (z1 / gì))
+
+# ::id 45
+# ::annotator bart-amr
+# ::snt Vẽ cho tôi một con cừu!
+(z0 / vẽ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / cừu
+              :quant 1)
+    :ARG2 (z1000 / thing))
+
+# ::id 46
+# ::annotator bart-amr
+# ::snt Tôi nhảy_dựng lên, hoàn_toàn bàng_hoàng.
+(z0 / nhảy_dựng
+    :ARG0 (z1 / hoàn_toàn
+              :mod (z2 / bàng_hoàng))
+    :ARG1 (z3 / lên
+              :ARG0 (z4 / tôi)))
+
+# ::id 47
+# ::annotator bart-amr
+# ::snt Tôi chớp_mắt thật mạnh.
+(z0 / chớp_mắt
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / mạnh
+              :quant (z3 / thật)))
+
+# ::id 48
+# ::annotator bart-amr
+# ::snt Tôi chớp_mắt thật mạnh. Tôi nhìn thật cẩn_thận khắp xung_quanh mình.
+(z0 / chớp_mắt
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / mạnh
+              :mod (z3 / thật))
+    :manner (z4 / nhìn
+                :ARG0 z1
+                :ARG1 (z5 / cẩn_thận
+                          :ARG0 z1
+                          :ARG1 (z6 / xung_quanh
+                                    :mod (z7 / mình)))))
+
+# ::id 49
+# ::annotator bart-amr
+# ::snt Và tôi đã thấy một người nhỏ_bé hết_sức kỳ_lạ, người đang đứng đó quan_sát tôi với vẻ hết_sức nghiêm_túc.
+(z0 / và
+    :op2 (z1 / thấy
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / người
+                       :mod (z4 / nhỏ_bé)
+                       :ARG0-of (z5 / hết_sức
+                                    :ARG1 (z6 / kỳ_lạ))
+                       :ARG0-of (z7 / quan_sát
+                                    :ARG1 z2
+                                    :ARG2 (z8 / vẻ_hết_sức
+                                              :mod (z9 / nghiêm_túc))))
+             :time (z10 / đứng_đó)))
+
+# ::id 50
+# ::annotator bart-amr
+# ::snt Ở đây bạn có_thể thấy bức chân_dung đẹp nhất mà sau_này tôi đã có_thể vẽ về cậu ấy.
+(z0 / có_thể
+    :ARG0 (z1 / bạn)
+    :ARG1 (z2 / thấy
+              :ARG0 z1
+              :ARG1 (z3 / chân_dung
+                        :ARG1-of (z4 / đẹp
+                                     :degree (z5 / nhất))))
+    :time (z6 / sau_này
+              :ARG0 z1
+              :ARG1 (z7 / có_thể
+                        :ARG0 z1
+                        :ARG1 (z8 / vẽ
+                                  :ARG0 z1
+                                  :ARG1 (z9 / cậu_ấy)))))
+
+# ::id 51
+# ::annotator bart-amr
+# ::snt Nhưng hình_vẽ của tôi chắc_chắn kém quyến_rũ hơn rất nhiều so với nguyên_mẫu của nó.
+(z0 / contrast-01
+    :ARG2 (z1 / chắc_chắn
+              :ARG0 (z2 / hình_vẽ
+                        :poss (z3 / tôi))
+              :ARG1 (z4 / quyến_rũ
+                        :ARG0 z2
+                        :ARG1 (z5 / nguyên_mẫu
+                                  :poss z3)
+                        :degree (z6 / hơn
+                                    :degree (z7 / rất)))))
+
+# ::id 52
+# ::annotator bart-amr
+# ::snt Tuy_nhiên, đó không phải là lỗi của tôi.
+(z0 / phải
+    :polarity -
+    :ARG0 (z1 / tuy_nhiên)
+    :ARG1 (z2 / lỗi
+              :poss (z3 / tôi)))
+
+# ::id 53
+# ::annotator bart-amr
+# ::snt Người_lớn đã làm tôi nản_lòng đối_với sự_nghiệp họa_sĩ khi tôi mới sáu tuổi, và tôi chẳng bao_giờ học vẽ bất_cứ thứ gì, ngoại_trừ những con trăn nhìn từ bên ngoài và những con trăn nhìn từ bên trong.
+(z0 / và
+    :op1 (z1 / làm
+             :ARG0 (z2 / người_lớn)
+             :ARG1 (z3 / tôi)
+             :ARG2 (z4 / nản_lòng
+                       :ARG0 z2
+                       :ARG1 (z5 / sự_nghiệp
+                                 :ARG0 z2
+                                 :ARG1 (z6 / họa_sĩ)
+                                 :time (z7 / sáu_tuổi))))
+    :op2 (z8 / bao_giờ
+             :ARG0 z2
+             :ARG1 (z9 / vẽ
+                       :ARG0 z2
+                       :ARG1 (z10 / bất_cứ_thứ
+                                  :ARG0 z2
+                                  :ARG1 (z11 / ngoại_trừ
+                                             :op1 (z12 / trăn_nhìn_từ_bên_ngoài)
+                                             :op2 (z13 / trăn_từ_bên_trong))))))
+
+# ::id 54
+# ::annotator bart-amr
+# ::snt Giờ_đây tôi nhìn chằm_chằm vào sự hiện_hình đột_ngột này, với đôi mắt thực_sự như lồi ra khỏi đầu vì kinh_ngạc.
+(z0 / nhìn
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / chằm_chằm
+              :ARG0 z1
+              :ARG1 (z3 / hiện_hình
+                        :ARG0 z1
+                        :ARG1 (z4 / đột_ngột
+                                  :mod (z5 / này))))
+    :ARG2 (z6 / đôi_mắt_thực_sự
+              :mod (z7 / lồi_ra)
+              :ARG0-of (z8 / khỏi
+                           :ARG1 (z9 / đầu)
+                           :ARG2 (z10 / kinh_ngạc)))
+    :time (z11 / Giờ_đây))
+
+# ::id 55
+# ::annotator bart-amr
+# ::snt Hãy nhớ rằng, tôi đã gặp nạn ở sa_mạc, cách một ngàn dặm_tính từ bất_kỳ vùng_đất có người ở nào.
+(z0 / gặp
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / nạn
+              :location (z3 / sa_mạc)
+              :ARG1-of (z4 / dặm_tính
+                           :ARG0 (z5 / ngàn
+                                     :mod (z6 / dặm_tính)
+                                     :mod (z7 / bất_kỳ)
+                                     :ARG0-of (z8 / vùng_đất
+                                                  :ARG1 (z9 / người
+                                                            :mod (z10 / nào))))))
+    :time (z11 / hãy_nhớ
+               :mod (z12 / rằng)))
+
+# ::id 56
+# ::annotator bart-amr
+# ::snt Thế_mà ông bạn nhỏ của tôi dường_như chẳng_lạc bước_vô_định giữa bãi cát, mà cũng chẳng ngất_đi vì mệt_mỏi, đói, khát hay sợ_hãi.
+(z0 / và
+    :op1 (z1 / dường_như
+             :ARG0 (z2 / ông_bạn
+                       :mod (z3 / nhỏ)
+                       :poss (z4 / tôi))
+             :ARG1 (z5 / bước_vô_định
+                       :mod (z6 / giữa)
+                       :mod (z7 / cát)))
+    :op2 (z8 / chẳng_lạc
+             :ARG0 z2
+             :ARG1 (z9 / ngất_đi
+                       :ARG0 z2
+                       :ARG1 (z10 / vì
+                                  :op1 (z11 / mệt_mỏi)
+                                  :op2 (z12 / đói)
+                                  :op3 (z13 / khát)
+                                  :op4 (z14 / sợ_hãi)))
+             :tense (z15 / cũng)))
+
+# ::id 57
+# ::annotator bart-amr
+# ::snt Vẻ ngoài của cậu chẳng gợi lên chút gì về một đứa trẻ bị lạc giữa sa_mạc, cách xa mọi nơi có người ở hàng ngàn dặm.
+(z0 / gợi
+    :agent (z1 / ngoài
+               :poss (z2 / cậu))
+    :tense (z3 / chẳng)
+    :manner (z4 / chút_gì)
+    :location (z5 / trẻ_bị
+                  :mod (z6 / lạc)
+                  :mod (z7 / sa_mạc))
+    :time (z8 / xa_mọi_nơi
+              :mod (z9 / có_người)
+              :location (z10 / hàng_ngàn
+                             :mod (z11 / dặm))))
+
+# ::id 58
+# ::annotator bart-amr
+# ::snt " Khi cuối_cùng tôi đã có_thể cất_tiếng, tôi bảo ông ta :'Nhưng -- ông làm gì ở đây thế?
+(z0 / có_thể
+    :agent (z1 / tôi)
+    :tense (z2 / đã)
+    :tense (z3 / cất_tiếng)
+    :time (z4 / cuối_cùng
+              :agent z1
+              :tense (z5 / đã))
+    :topic (z6 / bảo
+               :agent z1
+               :ARG1 (z7 / làm_gì
+                         :agent (z8 / ông_ta)
+                         :location (z9 / đây)
+                         :theme (z10 / amr-unknown))))
+
+# ::id 59
+# ::annotator bart-amr
+# ::snt Và để trả_lời, cậu lặp lại, thật chậm_rãi, như_thể cậu đang nói về một chuyện hệ_trọng :'Làm_ơn --_vẽ cho tôi một con cừu... '
+(z0 / và
+    :op1 (z1 / trả_lời
+             :ARG0 (z2 / cậu)
+             :ARG1 (z3 / lặp
+                       :ARG0 z2
+                       :ARG1 (z4 / lại)
+                       :degree (z5 / thật_chậm_rãi)))
+    :op2 (z6 / nói
+             :ARG0 z2
+             :ARG1 (z7 / hệ_trọng
+                       :ARG0 z2
+                       :ARG1 (z8 / làm_ơn)
+                       :ARG2 (z9 / cừu
+                                 :quant 1))
+             :ARG2 (z10 / tôi)
+             :tense (z11 / đang)))
+
+# ::id 60
+# ::annotator bart-amr
+# ::snt Khi một điều huyền_bí quá_sức lấn_át, người ta không dám không tuân theo.
+(z0 / dám
+    :polarity -
+    :ARG0 (z1 / người_ta)
+    :ARG1 (z2 / tuân_theo
+              :ARG0 z1)
+    :time (z3 / huyền_bí
+              :ARG0 z1
+              :ARG1 (z4 / quá_sức
+                        :ARG0 z1
+                        :ARG1 (z5 / lấn_át))))
+
+# ::id 61
+# ::annotator bart-amr
+# ::snt Dù dường_như có_vẻ nực_cười đối_với tôi, khi ở cách xa mọi nơi có người sinh_sống hàng ngàn dặm và đang cận_kề cái chết, tôi đã lấy từ trong túi ra một tờ giấy và cây_bút máy của mình.
+(z0 / có_vẻ
+    :ARG0 (z1 / dường_như)
+    :ARG1 (z2 / nực_cười
+              :ARG0-of (z3 / đối_với
+                           :ARG1 (z4 / tôi)))
+    :time (z5 / và
+              :op1 (z6 / sinh_sống
+                       :ARG0 (z7 / người)
+                       :ARG1 (z8 / hàng_ngàn
+                                 :mod (z9 / dặm)))
+              :op2 (z10 / cận_kề
+                        :ARG0 z7
+                        :ARG1 (z11 / chết)))
+    :time (z12 / túi_ra
+               :ARG0 z4
+               :ARG1 (z13 / tờ_giấy
+                          :quant 1
+                          :mod (z14 / cây_bút)
+                          :poss (z15 / mình))))
+
+# ::id 62
+# ::annotator bart-amr
+# ::snt " Nhưng rồi tôi nhớ lại việc học của mình đã tập_trung vào địa_lý, lịch_sử, toán và ngữ_pháp, và tôi nói với chú nhỏ đó ( cũng có chút gắt_gỏng ) rằng tôi không biết vẽ.
+(z0 / contrast-01
+    :ARG2 (z1 / và
+              :op1 (z2 / nhớ
+                       :ARG0 (z3 / tôi)
+                       :ARG1 (z4 / việc_học
+                                 :poss (z5 / mình)
+                                 :ARG1-of (z6 / tập_trung
+                                              :ARG2 (z7 / địa_lý))))
+              :op2 (z8 / nói
+                       :ARG0 z3
+                       :ARG1 (z9 / và
+                                 :op1 (z10 / lịch_sử)
+                                 :op2 (z11 / toán)
+                                 :op3 (z12 / ngữ_pháp))
+                       :ARG2 (z13 / chút_gắt_gỏng
+                                  :mod (z14 / cũng)))
+              :op3 (z15 / biết
+                        :polarity -
+                        :ARG0 z3
+                        :ARG1 (z16 / vẽ))))
+
+# ::id 63
+# ::annotator bart-amr
+# ::snt Anh ấy trả_lời tôi :'Điều đó không quan_trọng.
+(z0 / trả_lời
+    :ARG0 (z1 / anh_ấy)
+    :ARG1 (z2 / quan_trọng
+              :polarity -
+              :ARG0 (z3 / điều_đó))
+    :ARG2 (z4 / tôi))
+
+# ::id 64
+# ::annotator bart-amr
+# ::snt Hãy vẽ cho tôi một con cừu.
+(z0 / vẽ
+    :ARG0 (z1 / hãy)
+    :ARG1 (z2 / cừu
+              :quant 1)
+    :ARG2 (z3 / tôi))
+
+# ::id 65
+# ::annotator bart-amr
+# ::snt Nhưng tôi chưa từng vẽ một con cừu. "
+(z0 / contrast-01
+    :ARG2 (z1 / chưa
+              :ARG0 (z2 / tôi)
+              :ARG1 (z3 / vẽ
+                        :ARG0 z2
+                        :ARG1 (z4 / cừu
+                                  :quant 1))))
+
+# ::id 66
+# ::annotator bart-amr
+# ::snt Vì_thế, tôi đã vẽ cho cậu ấy một trong hai bức tranh mà tôi đã vẽ rất thường_xuyên.
+(z0 / vẽ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / cậu_ấy
+              :ARG1-of (z3 / thường_xuyên
+                           :degree (z4 / rất)))
+    :ARG2 (z5 / bức_tranh
+              :quant 1)
+    :time (z6 / vì_thế)
+    :tense (z7 / đã))
+
+# ::id 67
+# ::annotator bart-amr
+# ::snt Đó là bức tranh con trăn boa nhìn từ bên ngoài.
+(z0 / bức_tranh
+    :domain (z1 / đó)
+    :mod (z2 / con_trăn
+             :mod (z3 / nhìn)
+             :location (z4 / bên
+                           :mod (z5 / ngoài))))
+
+# ::id 68
+# ::annotator bart-amr
+# ::snt Và tôi đã sửng_sốt khi nghe chú nhỏ chào_đón điều đó bằng cách nói :'Không, không, không!
+(z0 / và
+    :op2 (z1 / sửng_sốt
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / chào_đón
+                       :ARG0 z2
+                       :ARG1 (z4 / chú_nhỏ)
+                       :location (z5 / điều_đó)
+                       :time (z6 / nghe
+                                 :ARG0 z2
+                                 :ARG1 (z7 / nói
+                                           :ARG0 (z8 / cách)
+                                           :ARG1 (z9 / không
+                                                     :polarity -))))))
+
+# ::id 69
+# ::annotator bart-amr
+# ::snt Tôi không muốn một con voi ở bên trong một con trăn xiết mồi.
+(z0 / muốn
+    :polarity -
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / voi
+              :quant 1
+              :mod (z3 / bên)
+              :location (z4 / trăn
+                            :mod (z5 / xiết_mồi))))
+
+# ::id 70
+# ::annotator bart-amr
+# ::snt Trăn boa là một sinh_vật rất nguy_hiểm, và con voi thì rất cồng_kềnh. "
+(z0 / và
+    :op1 (z1 / sinh_vật
+             :domain (z2 / trăn_boa)
+             :degree (z3 / rất)
+             :mod (z4 / nguy_hiểm))
+    :op2 (z5 / cồng_kềnh
+             :domain (z6 / con_voi)
+             :degree (z7 / rất)))
+
+# ::id 71
+# ::annotator bart-amr
+# ::snt Ở nơi tôi sống, mọi thứ đều rất nhỏ_bé.
+(z0 / nhỏ_bé
+    :domain (z1 / mọi_thứ
+                :mod (z2 / đều))
+    :degree (z3 / rất)
+    :location (z4 / nơi
+                  :poss (z5 / tôi)))
+
+# ::id 72
+# ::annotator bart-amr
+# ::snt Điều tôi cần là một con cừu.
+(z0 / cần
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / cừu
+              :quant 1))
+
+# ::id 73
+# ::annotator bart-amr
+# ::snt Hãy vẽ cho tôi một con cừu.
+(z0 / vẽ
+    :ARG0 (z1 / hãy)
+    :ARG1 (z2 / cừu
+              :quant 1)
+    :ARG2 (z3 / tôi))
+
+# ::id 74
+# ::annotator bart-amr
+# ::snt Thế_là sau đó tôi đã vẽ một bức tranh.
+(z0 / vẽ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / bức_tranh
+              :quant 1)
+    :time (z3 / sau_đó)
+    :tense (z4 / đã))
+
+# ::id 75
+# ::annotator bart-amr
+# ::snt Ông ấy đã nhìn nó một_cách cẩn_thận, sau đó ông ấy nói :'Không '.
+(z0 / nhìn
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / cẩn_thận
+              :quant 1)
+    :ARG2 (z3 / nói
+              :ARG0 z1
+              :ARG1 (z4 / không)
+              :time (z5 / sau_đó))
+    :tense (z6 / đã))
+
+# ::id 76
+# ::annotator bart-amr
+# ::snt Con cừu này đã rất ốm_yếu rồi.
+(z0 / ốm_yếu
+    :domain (z1 / cừu
+                :mod (z2 / này))
+    :degree (z3 / rất)
+    :degree (z4 / rồi))
+
+# ::id 77
+# ::annotator bart-amr
+# ::snt Hãy làm cho tôi một cái khác.
+(z0 / làm
+    :ARG0 (z1 / hãy)
+    :ARG1 (z2 / khác
+              :quant 1)
+    :ARG2 (z3 / tôi))
+
+# ::id 78
+# ::annotator bart-amr
+# ::snt Thế_là tôi đã thực_hiện một bức vẽ khác.
+(z0 / thực_hiện
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / bức
+              :quant 1
+              :mod (z3 / vẽ)
+              :mod (z4 / khác))
+    :tense (z5 / đã))
+
+# ::id 79
+# ::annotator bart-amr
+# ::snt Người bạn của tôi đã mỉm cười một_cách nhẹ_nhàng và bao_dung.
+(z0 / cười
+    :ARG0 (z1 / người
+              :mod (z2 / bạn)
+              :poss (z3 / tôi))
+    :ARG1 (z4 / và
+              :op1 (z5 / nhẹ_nhàng
+                       :quant 1)
+              :op2 (z6 / bao_dung
+                       :quant 1))
+    :tense (z7 / đã))
+
+# ::id 80
+# ::annotator bart-amr
+# ::snt Ông thấy đấy, " ông ấy nói, " đây không phải là một con cừu.
+(z0 / nói
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / phải
+              :polarity -
+              :ARG0 (z3 / đây)
+              :ARG1 (z4 / cừu
+                        :quant 1)
+              :time (z5 / đấy)))
+
+# ::id 81
+# ::annotator bart-amr
+# ::snt Đây là một con_con cừu đực.
+(z0 / cừu_đực
+    :domain (z1 / đây))
+
+# ::id 82
+# ::annotator bart-amr
+# ::snt Nó có sừng.
+(z0 / có_sừng
+    :ARG0 (z1 / nó))
+
+# ::id 83
+# ::annotator bart-amr
+# ::snt Thế_là sau đó tôi đã thực_hiện lại bức vẽ của mình một lần nữa.
+(z0 / thực_hiện
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / bức_vẽ
+              :poss (z3 / mình
+                        :mod (z4 / lần
+                                 :mod (z5 / nữa))))
+    :time (z6 / sau_đó)
+    :tense (z7 / đã))
+
+# ::id 84
+# ::annotator bart-amr
+# ::snt Nhưng nó cũng đã bị từ_chối, giống như những cái khác.
+(z0 / contrast-01
+    :ARG2 (z1 / bị_từ_chối
+              :ARG0 (z2 / nó)
+              :ARG1 (z3 / khác
+                        :quant (z4 / như))
+              :mod (z5 / cũng)
+              :tense (z6 / đã)))
+
+# ::id 85
+# ::annotator bart-amr
+# ::snt Con này đã quá già rồi.
+(z0 / già
+    :tense (z1 / đã)
+    :tense (z2 / đã)
+    :degree (z3 / rồi))
+
+# ::id 86
+# ::annotator bart-amr
+# ::snt Tôi muốn một con cừu sẽ sống lâu.
+(z0 / muốn
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / cừu
+              :quant 1)
+    :ARG2 (z3 / sống
+              :ARG0 z1
+              :ARG1 (z4 / lâu)))
+
+# ::id 87
+# ::annotator bart-amr
+# ::snt Đến lúc này sự kiên_nhẫn của tôi đã cạn_kiệt, bởi_vì tôi đang vội bắt_đầu tháo rời động_cơ của mình.
+(z0 / bởi_vì
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / bắt_đầu
+              :ARG0 z1
+              :ARG1 (z3 / động_cơ
+                        :poss (z4 / mình))
+              :time (z5 / tháo_rời
+                        :mod (z6 / động_cơ))
+              :time (z7 / đến_lúc
+                        :mod (z8 / này)))
+    :ARG2 (z9 / kiên_nhẫn
+              :ARG1-of (z10 / cạn_kiệt
+                            :ARG0 z1)))
+
+# ::id 88
+# ::annotator bart-amr
+# ::snt Thế_là tôi đã vẽ phác_bức vẽ này.
+(z0 / vẽ
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / phác_bức
+              :ARG0 z1
+              :ARG1 (z3 / này))
+    :tense (z4 / đã))
+
+# ::id 89
+# ::annotator bart-amr
+# ::snt Và tôi đã đưa ra một lời giải_thích kèm theo nó.
+(z0 / và
+    :op2 (z1 / đưa
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / giải_thích
+                       :ARG0 z2
+                       :ARG1 (z4 / kèm
+                                 :ARG0 z2
+                                 :ARG1 (z5 / nó)))
+             :tense (z6 / đã)))
+
+# ::id 90
+# ::annotator bart-amr
+# ::snt Đây chỉ là cái hộp của ông ấy.
+(z0 / hộp
+    :domain (z1 / đây)
+    :poss (z2 / ông_ấy)
+    :degree (z3 / chỉ))
+
+# ::id 91
+# ::annotator bart-amr
+# ::snt Con cừu bạn yêu_cầu đang ở bên trong.
+(z0 / yêu_cầu
+    :ARG0 (z1 / cừu_bạn)
+    :ARG1 (z2 / bên_trong)
+    :tense (z3 / đang))
+
+# ::id 92
+# ::annotator bart-amr
+# ::snt Tôi đã rất ngạc_nhiên khi thấy một tia_sáng bừng lên trên khuôn_mặt của vị quan_tòa trẻ tuổi của tôi :'Đó chính_xác là cách tôi muốn nó!
+(z0 / ngạc_nhiên
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / chính_xác
+              :domain (z3 / tia_sáng
+                          :mod (z4 / bừng_lên)
+                          :location (z5 / khuôn_mặt
+                                        :poss (z6 / quan_tòa
+                                                  :mod (z7 / trẻ_)
+                                                  :poss z1)))
+              :ARG1-of (z8 / muốn
+                           :ARG0 z1
+                           :ARG2 (z9 / nó)))
+    :time (z10 / thấy)
+    :tense (z11 / đã))
+
+# ::id 93
+# ::annotator bart-amr
+# ::snt Bạn có nghĩ rằng con cừu này sẽ phải cần có rất nhiều cỏ không?
+(z0 / nghĩ
+    :ARG0 (z1 / bạn)
+    :ARG1 (z2 / cần
+              :ARG0 (z3 / cừu
+                        :mod (z4 / này))
+              :ARG1 (z5 / cỏ
+                        :ARG1-of (z6 / nhiều
+                                     :polarity -))
+              :time (z7 / sẽ)))
+
+# ::id 94
+# ::annotator bart-amr
+# ::snt Tại_sao?
+(z0 / tại_sao
+    :mode interrogative)
+
+# ::id 95
+# ::annotator bart-amr
+# ::snt Bởi_vì ở nơi tôi sống mọi thứ đều rất nhỏ.
+(z0 / bởi_vì
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / sống
+              :ARG0 z1
+              :ARG1 (z3 / thứ
+                        :mod (z4 / nhỏ
+                                 :degree (z5 / rất)))))
+
+# ::id 96
+# ::annotator bart-amr
+# ::snt Chắc_chắn sẽ có đủ cỏ cho nó
+(z0 / có
+    :ARG0 (z1 / chắc_chắn)
+    :ARG1 (z2 / đủ_cỏ)
+    :ARG2 (z3 / nó)
+    :tense (z4 / sẽ))
+
+# ::id 97
+# ::annotator bart-amr
+# ::snt Tôi đã nói.
+(z0 / nói
+    :ARG0 (z1 / tôi)
+    :tense (z2 / đã))
+
+# ::id 98
+# ::annotator bart-amr
+# ::snt Đó là con cừu rất nhỏ mà tôi đã tặng bạn.
+(z0 / và
+    :op1 (z1 / cừu
+             :domain (z2 / đó)
+             :degree (z3 / nhỏ))
+    :op2 (z4 / tặng
+             :ARG0 (z5 / tôi)
+             :ARG1 (z6 / bạn)
+             :tense (z7 / đã)))
+
+# ::id 99
+# ::annotator bart-amr
+# ::snt Ông ấy đã cúi đầu trên bức vẽ :'Không nhỏ đến mức đó đâu -- Nhìn kìa!
+(z0 / cúi_đầu
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / vẽ
+              :ARG0 z1
+              :ARG1 (z3 / đến
+                        :polarity -
+                        :ARG0 (z4 / nhỏ)
+                        :ARG1 (z5 / mức_đó)
+                        :manner (z6 / đâu)
+                        :ARG1-of (z7 / nhìn_kìa
+                                     :mode expressive)))
+    :location (z8 / bức)
+    :tense (z9 / đã))
+
+# ::id 100
+# ::annotator bart-amr
+# ::snt Ông ấy đã đi ngủ.
+(z0 / đi_ngủ
+    :ARG0 (z1 / ông_ấy)
+    :tense (z2 / đã))
+
+# ::id 101
+# ::annotator bart-amr
+# ::snt Và đó là cách tôi đã làm_quen với hoàng_tử bé.
+(z0 / và
+    :op2 (z1 / làm_quen
+             :agent (z2 / tôi)
+             :ARG1 (z3 / hoàng_tử
+                       :mod (z4 / bé))
+             :tense (z5 / đã)
+             :tense (z6 / đó)))
+
+# ::id 102
+# ::annotator bart-amr
+# ::snt Chương 3.
+(z0 / chương
+    :mod 3)
+
+# ::id 103
+# ::annotator bart-amr
+# ::snt Tôi đã mất rất nhiều thời_gian để biết được anh ấy từ đâu đến.
+(z0 / biết
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / anh_ấy)
+    :ARG2 (z3 / đâu_đến)
+    :ARG1-of (z4 / mất_rất
+                 :ARG2 (z5 / thời_gian)))
+
+# ::id 104
+# ::annotator bart-amr
+# ::snt Hoàng_tử_bé, người đã hỏi tôi rất nhiều câu_hỏi, dường_như chẳng bao_giờ nghe thấy những câu tôi hỏi cậu ấy.
+(z0 / hỏi
+    :ARG0 (z1 / hoàng_tử_bé)
+    :ARG1 (z2 / tôi)
+    :ARG2 (z3 / câu_hỏi
+              :quant (z4 / nhiều
+                         :degree (z5 / rất)))
+    :ARG1-of (z6 / dường_như
+                 :ARG2 (z7 / nghe_thấy
+                           :ARG0 (z8 / bao_giờ)
+                           :ARG1 (z9 / câu_tôi
+                                     :ARG0-of (z10 / hỏi
+                                                   :ARG1 (z11 / cậu_ấy))))))
+
+# ::id 105
+# ::annotator bart-amr
+# ::snt Chính từ những lời tình_cờ thốt ra mà mọi thứ đã dần_dần được tiết_lộ với tôi.
+(z0 / dần_dần
+    :ARG0 (z1 / mọi_thứ)
+    :ARG1 (z2 / tiết_lộ
+              :ARG0 z1
+              :ARG1 (z3 / tôi))
+    :time (z4 / tình_cờ
+              :mod (z5 / thốt_ra)))
+
+# ::id 106
+# ::annotator bart-amr
+# ::snt Chẳng_hạn, lần đầu_tiên ông_ấy nhìn thấy chiếc máy_bay của tôi ( tôi sẽ không vẽ chiếc máy_bay của mình ; việc đó sẽ quá phức_tạp đối_với tôi ), ông_ấy đã hỏi tôi :'Vật đó là cái gì vậy? '
+(z0 / hỏi
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / và
+              :op1 (z3 / chiếc
+                       :ARG0 (z4 / tôi)
+                       :ARG1 (z5 / máy_bay
+                                 :poss z4)
+                       :polarity -)
+              :op2 (z6 / phức_tạp
+                       :ARG0 z4
+                       :ARG1 (z7 / vật
+                                 :mod (z8 / vậy))
+                       :time (z9 / lần_đầu_tiên)
+                       :mod (z10 / nhìn_thấy)))
+    :ARG2 (z11 / tôi)
+    :time (z12 / chẳng_hạn))
+
+# ::id 107
+# ::annotator bart-amr
+# ::snt Đó không phải là một vật_thể.
+(z0 / phải
+    :polarity -
+    :ARG0 (z1 / đó)
+    :ARG1 (z2 / vật_thể
+              :quant 1))
+
+# ::id 108
+# ::annotator bart-amr
+# ::snt Nó đang bay.
+(z0 / bay
+    :domain (z1 / nó)
+    :mod (z2 / đang))
+
+# ::id 109
+# ::annotator bart-amr
+# ::snt Nó là một chiếc máy_bay.
+(z0 / chiếc
+    :domain (z1 / nó)
+    :mod (z2 / máy_bay))
+
+# ::id 110
+# ::annotator bart-amr
+# ::snt Nó là chiếc máy_bay của tôi.
+(z0 / chiếc_máy_bay
+    :domain (z1 / nó)
+    :poss (z2 / tôi))
+
+# ::id 111
+# ::annotator bart-amr
+# ::snt Và tôi đã tự_hào khi để cậu ấy biết được rằng tôi có_thể bay.
+(z0 / và
+    :op2 (z1 / tự_hào
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / biết
+                       :ARG0 z2
+                       :ARG1 (z4 / cậu_ấy)
+                       :ARG2 (z5 / có_thể
+                                 :ARG0 z2
+                                 :ARG1 (z6 / bay)))
+             :tense (z7 / đã)))
+
+# ::id 112
+# ::annotator bart-amr
+# ::snt Ông ấy đã thốt lên sau đó :'Cái gì! '
+(z0 / thốt_lên
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / cái_gì)
+    :time (z3 / sau_đó)
+    :tense (z4 / đã))
+
+# ::id 113
+# ::annotator bart-amr
+# ::snt Ông đã rơi từ trên bầu_trời xuống sao?
+(z0 / rơi
+    :ARG0 (z1 / Ông)
+    :tense (z2 / đã)
+    :location (z3 / bầu_trời
+                  :mod (z4 / xuống_sao))
+    :mode interrogative)
+
+# ::id 114
+# ::annotator bart-amr
+# ::snt Đúng
+(z0 / đúng)
+
+# ::id 115
+# ::annotator bart-amr
+# ::snt Tôi đã trả_lời khiêm_tốn.
+(z0 / trả_lời
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / khiêm_tốn)
+    :tense (z3 / đã))
+
+# ::id 116
+# ::annotator bart-amr
+# ::snt " Ô!
+(z0 / Ô
+    :mode expressive)
+
+# ::id 117
+# ::annotator bart-amr
+# ::snt Điều đó thật buồn_cười!
+(z0 / buồn_cười
+    :domain (z1 / điều_đó)
+    :degree (z2 / thật))
+
+# ::id 118
+# ::annotator bart-amr
+# ::snt Và hoàng_tử nhỏ đã phá lên một tràng cười thú_vị, điều này đã làm tôi bực_mình rất nhiều.
+(z0 / và
+    :op2 (z1 / phá_lên
+             :ARG0 (z2 / hoàng_tử
+                       :mod (z3 / nhỏ))
+             :ARG1 (z4 / tràng_cười
+                       :mod (z5 / thú_vị)
+                       :mod (z6 / điều_này))
+             :ARG2 (z7 / bực_mình
+                       :ARG0 z2
+                       :ARG1 (z8 / tôi)
+                       :degree (z9 / rất
+                                   :degree (z10 / nhiều)))))
+
+# ::id 119
+# ::annotator bart-amr
+# ::snt Tôi thích những nỗi bất_hạnh của mình được xem_xét nghiêm_túc.
+(z0 / thích
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / nỗi_bất_hạnh
+              :poss (z3 / mình)
+              :ARG0-of (z4 / xem_xét
+                           :ARG1 (z5 / nghiêm_túc))))
+
+# ::id 120
+# ::annotator bart-amr
+# ::snt Sau đó ông ấy đã nói thêm :'Vậy là cả ông cũng đến từ bầu_trời!
+(z0 / nói
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / vậy
+              :ARG1-of (z3 / đến
+                           :ARG2 (z4 / bầu_trời)))
+    :time (z5 / sau_đó)
+    :tense (z6 / đã))
+
+# ::id 121
+# ::annotator bart-amr
+# ::snt Hành_tinh của ông là hành_tinh nào?
+(z0 / hành_tinh
+    :domain (z1 / ông)
+    :mod (z2 / nào))
+
+# ::id 122
+# ::annotator bart-amr
+# ::snt Vào khoảnh_khắc đó, tôi đã bắt_gặp một tia_sáng trong cái bí_ẩn không_thể thấu_suốt về sự hiện_diện của ông ấy ; và tôi đã hỏi một_cách đột_ngột :'Ông đến từ một hành_tinh khác sao?
+(z0 / và
+    :op1 (z1 / bắt_gặp
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / tia_sáng
+                       :quant 1
+                       :location (z4 / bí_ẩn)
+                       :ARG1-of (z5 / thấu_suốt
+                                    :polarity -
+                                    :ARG2 (z6 / hiện_diện
+                                              :poss (z7 / ông_ấy))))
+             :time (z8 / khoảnh_khắc
+                       :mod (z9 / đó)))
+    :op2 (z10 / hỏi
+              :ARG0 z2
+              :ARG1 (z11 / đến
+                         :ARG0 z7
+                         :ARG1 (z12 / hành_tinh
+                                    :quant 1
+                                    :mod (z13 / sao)))
+              :tense (z14 / đã)))
+
+# ::id 123
+# ::annotator bart-amr
+# ::snt Nhưng ông ấy đã không trả_lời.
+(z0 / contrast-01
+    :ARG2 (z1 / trả_lời
+              :polarity -
+              :ARG0 (z2 / ông_ấy)
+              :tense (z3 / đã)))
+
+# ::id 124
+# ::annotator bart-amr
+# ::snt Ông ấy đã khẽ lắc_đầu mà không rời mắt khỏi chiếc máy_bay của tôi :'Đúng là với thứ đó, ông không_thể đến từ một nơi rất xa...
+(z0 / và
+    :op1 (z1 / lắc_đầu
+             :ARG0 (z2 / ông_ấy)
+             :tense (z3 / đã))
+    :op2 (z4 / không_thể
+             :polarity -
+             :ARG0 z2
+             :ARG1 (z5 / đến
+                       :ARG0 z2
+                       :ARG1 (z6 / nơi
+                                 :quant 1
+                                 :mod (z7 / rất_xa)))
+             :time (z8 / mắt_khỏi
+                       :ARG0 z2
+                       :ARG1 (z9 / chiếc
+                                 :ARG0 z2
+                                 :ARG1 (z10 / máy_bay
+                                            :poss (z11 / tôi))))))
+
+# ::id 125
+# ::annotator bart-amr
+# ::snt Và ông ấy đã chìm vào sự trầm_tư, điều này đã kéo_dài một thời_gian dài.
+(z0 / và
+    :op2 (z1 / kéo_dài
+             :ARG0 (z2 / ông_ấy)
+             :ARG1 (z3 / thời_gian
+                       :quant 1
+                       :mod (z4 / dài))
+             :tense (z5 / đã)
+             :time (z6 / trầm_tư
+                       :mod (z7 / sự))))
+
+# ::id 126
+# ::annotator bart-amr
+# ::snt Thế rồi, sau khi lấy con cừu của tôi ra khỏi túi, ông ấy đã mải_mê chiêm_ngưỡng kho báu của mình.
+(z0 / mải_mê
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / chiêm_ngưỡng
+              :mod (z3 / kho_báu)
+              :poss (z4 / mình))
+    :time (z5 / sau
+              :op1 (z6 / ra
+                       :ARG0 (z7 / cừu
+                                 :poss (z8 / tôi))
+                       :ARG1 (z9 / túi)))
+    :time (z10 / thế_rồi))
+
+# ::id 127
+# ::annotator bart-amr
+# ::snt Ông có_thể tưởng_tượng sự tò_mò của tôi đã bị khơi dậy như_thế_nào bởi lời tâm_sự nửa_chừng này về'những hành_tinh khác '.
+(z0 / có_thể
+    :ARG0 (z1 / ông)
+    :ARG1 (z2 / tưởng_tượng
+              :ARG0 z1
+              :ARG1 (z3 / tò_mò
+                        :poss (z4 / tôi))
+              :ARG2 (z5 / dậy_như_thế_nào
+                        :ARG0 z1
+                        :ARG1 (z6 / tâm_sự
+                                  :ARG0 z1
+                                  :ARG1 (z7 / nửa_chừng
+                                            :mod (z8 / này))
+                                  :ARG2 (z9 / hành_tinh
+                                            :mod (z10 / khác))))))
+
+# ::id 128
+# ::annotator bart-amr
+# ::snt Vì_vậy, tôi đã nỗ_lực rất lớn để tìm_hiểu thêm về đề_tài này.
+(z0 / nỗ_lực
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / tìm_hiểu
+              :ARG0 z1
+              :ARG1 (z3 / đề_tài
+                        :mod (z4 / này))
+              :mod (z5 / rất_lớn))
+    :time (z6 / vì_vậy)
+    :tense (z7 / đã))
+
+# ::id 129
+# ::annotator bart-amr
+# ::snt Chú nhỏ của tôi ơi, cậu đến từ đâu thế?
+(z0 / đến
+    :ARG0 (z1 / cậu)
+    :ARG1 (z2 / đâu_thế)
+    :ARG2 (z3 / chú_nhỏ
+              :poss (z4 / tôi))
+    :polarity -)
+
+# ::id 130
+# ::annotator bart-amr
+# ::snt Cái'nơi tôi sống'mà ông đang nói đến đó là cái gì?
+(z0 / nói
+    :ARG0 (z1 / ông)
+    :ARG1 (z2 / đến
+              :ARG0 z1
+              :ARG1 (z3 / gì
+                        :domain (z4 / cái_nơi
+                                    :mod (z5 / tôi))))
+    :tense (z6 / đang))
+
+# ::id 131
+# ::annotator bart-amr
+# ::snt Ông muốn mang con cừu của ông đi đâu?
+(z0 / muốn
+    :ARG0 (z1 / ông)
+    :ARG1 (z2 / mang
+              :ARG0 z1
+              :ARG1 (z3 / cừu
+                        :poss z1)
+              :ARG2 (z4 / đi
+                        :ARG0 z1
+                        :ARG1 (z5 / amr-unknown))))
+
+# ::id 132
+# ::annotator bart-amr
+# ::snt Sau một hồi im_lặng suy_nghĩ, ông ấy đã trả_lời :'Cái điều rất tốt về cái hộp mà ông đã cho tôi là vào ban_đêm cậu ấy có_thể dùng nó làm nhà của mình. '
+(z0 / trả_lời
+    :ARG0 (z1 / ông_ấy)
+    :ARG1 (z2 / có_thể
+              :ARG0 (z3 / cậu_ấy)
+              :ARG1 (z4 / làm
+                        :ARG0 z3
+                        :ARG1 (z5 / nhà
+                                  :poss (z6 / mình)))
+              :time (z7 / sau
+                        :op1 (z8 / hồi_im_lặng
+                                 :mod (z9 / suy_nghĩ))
+                        :op2 (z10 / hộp
+                                  :ARG1-of (z11 / tốt
+                                                :degree (z12 / rất)))))
+    :ARG2 (z13 / tôi))
+
+# ::id 133
+# ::annotator bart-amr
+# ::snt Đúng là như_vậy.
+(z0 / như_vậy
+    :domain (z1 / đúng))
+
+# ::id 134
+# ::annotator bart-amr
+# ::snt Và nếu em ngoan, tôi cũng sẽ cho em một sợi dây thừng để em có_thể buộc_cậu ấy lại vào ban_ngày, và cả một cái cọc để buộc cậu ấy vào nữa.
+(z0 / và
+    :op2 (z1 / sẽ
+             :ARG0 (z2 / tôi)
+             :ARG1 (z3 / có_thể
+                       :ARG0 (z4 / em)
+                       :ARG1 (z5 / buộc_cậu_ấy
+                                 :mod (z6 / lại)
+                                 :ARG1-of (z7 / buộc_cậu_ấy))
+                       :location (z8 / ban_ngày))
+             :ARG2 z4
+             :time (z9 / ngoan
+                       :ARG0 z4)
+             :time (z10 / sợi_dây
+                        :mod (z11 / thừng))))
+
+# ::id 135
+# ::annotator bart-amr
+# ::snt Nhưng ông hoàng nhỏ dường_như sửng_sốt trước lời đề_nghị này :'Buộc_cậu ấy lại! '
+(z0 / contrast-01
+    :ARG2 (z1 / dường_như
+              :ARG0 (z2 / ông_hoàng
+                        :mod (z3 / nhỏ))
+              :ARG1 (z4 / sửng_sốt
+                        :ARG1 (z5 / lời_đề_nghị
+                                  :mod (z6 / này))
+                        :ARG2 (z7 / Buộc_cậu_ấy
+                                  :mod (z8 / lại)))))
+
+# ::id 136
+# ::annotator bart-amr
+# ::snt Thật là một ý_tưởng kỳ_lạ!
+(z0 / ý_tưởng
+    :domain (z1 / thật)
+    :mod (z2 / kỳ_lạ))
+
+# ::id 137
+# ::annotator bart-amr
+# ::snt Nhưng nếu ông không buộc cậu ấy lại,
+(z0 / contrast-01
+    :ARG2 (z1 / buộc
+              :polarity -
+              :ARG0 (z2 / ông)
+              :ARG1 (z3 / cậu_ấy)
+              :manner (z4 / lại)))
+
+# ::id 138
+# ::annotator bart-amr
+# ::snt Tôi đã nói :'Cậu ấy sẽ đi lang_thang đâu_đó rồi bị lạc. '
+(z0 / nói
+    :ARG0 (z1 / tôi)
+    :ARG1 (z2 / đi_
+              :ARG0 (z3 / cậu_ấy)
+              :ARG1 (z4 / đâu_đó)
+              :ARG2 (z5 / bị_lạc)
+              :tense (z6 / sẽ))
+    :tense (z7 / đã))
+
+# ::id 139
+# ::annotator bart-amr
+# ::snt Người bạn của tôi lại bật cười rộ lên :'Nhưng ông nghĩ cậu ấy sẽ đi đâu? '
+(z0 / lại
+    :ARG0 (z1 / người
+              :mod (z2 / bạn)
+              :poss (z3 / tôi))
+    :ARG1 (z4 / cười
+              :ARG0 z1
+              :ARG1 (z5 / nghĩ
+                        :ARG0 (z6 / ông_nghĩ
+                                  :mod (z7 / cậu_ấy))
+                        :ARG1 (z8 / đi
+                                  :ARG0 (z9 / đâu)
+                                  :ARG1 (z10 / amr-unknown)))))
+
+# ::id 140
+# ::annotator bart-amr
+# ::snt Bất_cứ nơi nào.
+(z0 / nơi
+    :mod (z1 / bất_cứ)
+    :mod (z2 / nào))
+
+# ::id 141
+# ::annotator bart-amr
+# ::snt Ngay thẳng phía trước cậu ấy.
+(z0 / thẳng_phía
+    :ARG1 (z1 / cậu_ấy)
+    :time (z2 / ngay))
+
+# ::id 142
+# ::annotator bart-amr
+# ::snt Thế rồi ông hoàng nhỏ đã nói một_cách tha_thiết :'Điều đó không quan_trọng. '
+(z0 / nói
+    :ARG0 (z1 / ông_hoàng
+              :mod (z2 / nhỏ))
+    :ARG1 (z3 / quan_trọng
+              :polarity -
+              :ARG0 (z4 / điều_đó)
+              :ARG1 (z5 / tha_thiết
+                        :quant 1))
+    :tense (z6 / đã))
+
+# ::id 143
+# ::annotator bart-amr
+# ::snt Ở nơi tôi sống, mọi thứ đều thật nhỏ_bé!
+(z0 / nhỏ_bé
+    :ARG0 (z1 / mọi_thứ
+              :mod (z2 / đều_thật))
+    :ARG1 (z3 / nơi_tôi)
+    :mod (z4 / sống))
+
+# ::id 144
+# ::annotator bart-amr
+# ::snt Và, với một_chút buồn_bã có_lẽ, cậu ấy đã nói thêm :'Ngay thẳng phía trước cậu ấy, không ai có_thể đi rất xa... '
+(z0 / và
+    :op2 (z1 / nói_thêm
+             :ARG0 (z2 / cậu_ấy)
+             :ARG1 (z3 / có_thể
+                       :polarity -
+                       :ARG0 (z4 / ai)
+                       :ARG1 (z5 / đi
+                                 :ARG0 z4
+                                 :ARG1 (z6 / xa
+                                           :degree (z7 / rất))
+                                 :time (z8 / thẳng_phía
+                                           :mod (z9 / trước_cậu_ấy))))
+             :ARG2 (z10 / buồn_bã
+                        :mod (z11 / có_lẽ))))
