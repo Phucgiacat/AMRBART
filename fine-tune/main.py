@@ -580,6 +580,24 @@ def main():
                         )
                         input_texts = [txt.replace("<AMR>", '').replace("</AMR>", '').strip() for txt in decoded_inputs]
 
+                    # Fallback: lấy trực tiếp từ predict_dataset nếu inputs không có
+                    if not input_texts and predict_dataset is not None:
+                        try:
+                            input_texts = [s.replace("<AMR>", '').replace("</AMR>", '').strip() for s in predict_dataset["src"]]
+                        except Exception:
+                            input_texts = []
+
+                    # Fallback cuối: đọc từ test_file nếu là file văn bản
+                    if not input_texts and getattr(data_args, "test_file", None):
+                        try:
+                            with open(data_args.test_file, "r", encoding="utf-8") as f:
+                                if data_args.test_file.endswith(".jsonl"):
+                                    input_texts = [json.loads(line.strip())["sent"].strip() for line in f if line.strip()]
+                                else:
+                                    input_texts = [line.strip() for line in f if line.strip()]
+                        except Exception:
+                            input_texts = []
+
                     preds = predict_results.predictions
                     if isinstance(preds, tuple):
                         preds = preds[0]
