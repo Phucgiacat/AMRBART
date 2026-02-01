@@ -47,7 +47,7 @@ torchrun \
     main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file /kaggle/input/data4parsing/train.jsonl \
+    --test_file /kaggle/input/data4parsing/val.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
