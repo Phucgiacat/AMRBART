@@ -68,6 +68,7 @@ python3 -u main.py \
     --max_grad_norm 0 \
     --max_steps -1 \
     --predict_with_generate \
+    --predict_without_label False \
     --smart_init False \
     --use_fast_tokenizer False \
     --logging_dir $OutputDir/logs \
