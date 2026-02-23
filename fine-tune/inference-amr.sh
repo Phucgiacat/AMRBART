@@ -39,7 +39,7 @@ export CUDA_VISIBLE_DEVICES=0
 python3 main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file /kaggle/input/datasets/phucgiacat/data4parsing-131k/train.vi.jsonl \
+    --test_file /kaggle/input/datasets/phucgiacat/amrv1-data/train.vi.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
@@ -47,7 +47,7 @@ python3 main.py \
     --model_name_or_path $MODEL \
     --overwrite_output_dir \
     --unified_input True \
-    --per_device_eval_batch_size 1 \
+    --per_device_eval_batch_size 2 \
     --max_source_length 400 \
     --max_target_length 1024 \
     --val_max_target_length 1024 \
