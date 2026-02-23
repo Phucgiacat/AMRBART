@@ -16,6 +16,7 @@ import os
 import re
 import math
 import time
+import penman
 import torch
 from torch import nn
 from torch.utils.data import Dataset
@@ -30,6 +31,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union, Callable
 from transformers.modeling_utils import PreTrainedModel
 from common.training_args import TrainingArguments
 from common.utils import save_dummy_batch
+from common import postprocessing
 from transformers.data.data_collator import DataCollator
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.optimization import get_scheduler
@@ -221,6 +223,11 @@ class Seq2SeqTrainer(Trainer):
         if args.do_train == True:
             len_dataloader = len(self.get_train_dataloader())
             self.loss_scheduler = Loss_scheduler(args, len_dataloader)
+
+        self._stream_predict_to_file = False
+        self._stream_prediction_file = None
+        self._stream_penman_file = None
+        self._stream_prediction_index = 0
 
     def create_optimizer(self):
         """
@@ -594,8 +601,27 @@ class Seq2SeqTrainer(Trainer):
             gen_kwargs["num_beams"] if gen_kwargs.get("num_beams") is not None else self.args.generation_num_beams
         )
         self._gen_kwargs = gen_kwargs
-        
-        return super().predict(test_dataset, ignore_keys=ignore_keys, metric_key_prefix=metric_key_prefix)
+
+        self._stream_predict_to_file = bool(self.args.predict_with_generate)
+        self._stream_prediction_file = os.path.join(self.args.output_dir, "generated_predictions.txt")
+        self._stream_penman_file = os.path.join(self.args.output_dir, "generated_predictions_penman.txt")
+        self._stream_prediction_index = 0
+
+        if self._stream_predict_to_file and self.is_world_process_zero():
+            os.makedirs(self.args.output_dir, exist_ok=True)
+            with open(self._stream_prediction_file, "w", encoding="utf-8"):
+                pass
+            if self.args.task == "text2amr":
+                with open(self._stream_penman_file, "w", encoding="utf-8"):
+                    pass
+
+        try:
+            return super().predict(test_dataset, ignore_keys=ignore_keys, metric_key_prefix=metric_key_prefix)
+        finally:
+            self._stream_predict_to_file = False
+            self._stream_prediction_file = None
+            self._stream_penman_file = None
+            self._stream_prediction_index = 0
 
     def prediction_step(
         self,
@@ -691,6 +717,66 @@ class Seq2SeqTrainer(Trainer):
         # in case the batch is shorter than max length, the output should be padded
         if generated_tokens.shape[-1] < max_length:
             generated_tokens = self._pad_tensors_to_max_len(generated_tokens, max_length)
+
+        if self._stream_predict_to_file and self._stream_prediction_file and self.is_world_process_zero():
+            streamed_predictions = self.tokenizer.batch_decode(
+                generated_tokens.detach().cpu(),
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=False,
+            )
+            with open(self._stream_prediction_file, "a", encoding="utf-8") as writer:
+                writer.write("\n".join(streamed_predictions) + "\n")
+
+            if self.args.task == "text2amr" and self._stream_penman_file:
+                if "input_ids" in inputs and inputs["input_ids"] is not None:
+                    source_ids = inputs["input_ids"].detach().cpu()
+                else:
+                    source_ids = generation_inputs.detach().cpu() if generation_inputs is not None else None
+
+                input_texts = []
+                if source_ids is not None:
+                    decoded_inputs = self.tokenizer.batch_decode(
+                        source_ids,
+                        skip_special_tokens=True,
+                        clean_up_tokenization_spaces=False,
+                    )
+                    input_texts = [txt.replace("<AMR>", "").replace("</AMR>", "").strip() for txt in decoded_inputs]
+
+                penman_graphs = []
+                for idx, token_ids in enumerate(generated_tokens.detach().cpu().tolist()):
+                    if len(token_ids) == 0:
+                        continue
+                    token_ids[0] = self.tokenizer.bos_token_id
+                    token_ids = [
+                        self.tokenizer.eos_token_id if itm == self.tokenizer.amr_eos_token_id else itm
+                        for itm in token_ids if itm != self.tokenizer.pad_token_id
+                    ]
+
+                    try:
+                        graph, status, _ = self.tokenizer.decode_amr(token_ids, restore_name_ops=False)
+                        graph.status = status
+                        graph.metadata = {
+                            "id": str(self._stream_prediction_index + idx),
+                            "annotator": "bart-amr",
+                            "snt": input_texts[idx] if idx < len(input_texts) else "",
+                        }
+
+                        for i, triple in enumerate(graph.triples):
+                            if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
+                                graph.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
+
+                        txt = penman.encode(graph)
+                        txt = postprocessing.fix_empty_concepts_in_amr_string(txt)
+                        txt = postprocessing.dedup_variables_in_amr_string(txt)
+                        penman_graphs.append(txt)
+                    except Exception:
+                        continue
+
+                if penman_graphs:
+                    with open(self._stream_penman_file, "a", encoding="utf-8") as writer:
+                        writer.write("\n\n".join(penman_graphs) + "\n\n")
+
+            self._stream_prediction_index += len(streamed_predictions)
 
         with torch.no_grad():
             with self.compute_loss_context_manager():
