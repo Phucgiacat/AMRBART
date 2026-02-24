@@ -47,7 +47,7 @@ python3 main.py \
     --model_name_or_path $MODEL \
     --overwrite_output_dir \
     --unified_input True \
-    --per_device_eval_batch_size 2 \
+    --per_device_eval_batch_size 1 \
     --max_source_length 400 \
     --max_target_length 1024 \
     --val_max_target_length 1024 \
