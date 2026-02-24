@@ -39,7 +39,7 @@ export CUDA_VISIBLE_DEVICES=0
 python3 main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file /kaggle/input/datasets/phucgiacat/amrv1-data/train.vi.jsonl \
+    --test_file "/kaggle/input/datasets/phucgiacat/amrdatav2/train.vi (1).jsonl" \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
