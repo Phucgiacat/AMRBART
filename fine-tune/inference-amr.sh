@@ -4,8 +4,8 @@ RootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Dataset=examples
 Dataset=ViAMR
 
-BasePath=/kaggle/working/AMRBART                    
-DataPath=/kaggle/working/AMRBART/data/ViAMR/$Dataset  
+BasePath=/content/AMRBART                    
+DataPath=/content/AMRBART/data/ViAMR/$Dataset  
 
 ModelCate=AMRBART-large
 
@@ -39,7 +39,7 @@ export CUDA_VISIBLE_DEVICES=0
 python3 main.py \
     --data_dir $DataPath \
     --task "text2amr" \
-    --test_file "/kaggle/input/datasets/phucgiacat/amrdatav2/train.vi (1).jsonl" \
+    --test_file $DataPath/train.vi.jsonl \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
@@ -49,10 +49,10 @@ python3 main.py \
     --unified_input True \
     --per_device_eval_batch_size 1 \
     --max_source_length 400 \
-    --max_target_length 1024 \
-    --val_max_target_length 1024 \
-    --generation_max_length 1024 \
-    --generation_num_beams 5 \
+    --max_target_length 512 \
+    --val_max_target_length 512 \
+    --generation_max_length 512 \
+    --generation_num_beams 2 \
     --predict_with_generate \
     --predict_without_label \
     --smart_init False \
@@ -61,7 +61,7 @@ python3 main.py \
     --seed 42 \
     --fp16 \
     --fp16_backend "auto" \
-    --dataloader_num_workers 8 \
+    --dataloader_num_workers 4 \
     --eval_dataloader_num_workers 2 \
     --include_inputs_for_metrics \
     --do_train False \
