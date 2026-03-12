@@ -9,7 +9,7 @@ DataPath=/content/AMRBART/data/ViAMR/$Dataset
 
 ModelCate=AMRBART-large
 
-MODEL=${1:-phucgiacat/ViAMR-BART-Large-V1}
+MODEL=${1:-xfbai/AMRBART-large-finetuned-AMR3.0-AMRParsing}
 ModelCache=$BasePath/.cache
 DataCache=$DataPath/.cache/dump-amrparsing
 
