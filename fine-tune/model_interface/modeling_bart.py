@@ -1184,6 +1184,7 @@ class BartDecoder(BartPretrainedModel):
                     encoder_hidden_states,
                     amr_encoder_hidden_states,
                     encoder_attention_mask,
+                    amr_encoder_attention_mask,
                     head_mask[idx] if head_mask is not None else None,
                     cross_attn_head_mask[idx] if cross_attn_head_mask is not None else None,
                     None,
