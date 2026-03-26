@@ -48,6 +48,11 @@ class MemoryCleanupCallback(TrainerCallback):
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
+
+    def on_prediction_step(self, args, state, control, **kwargs):
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 # check_min_version("4.21.0.dev0")
 
