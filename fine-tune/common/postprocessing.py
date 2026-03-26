@@ -22,7 +22,7 @@ def fix_empty_concepts_in_amr_string(amr_string: str, placeholder: str = "amr-un
 
 def dedup_variables_in_amr_string(amr_string: str) -> str:
     """Ensure variable names are unique within one AMR string."""
-    decl = re.compile(r"\(\s*([a-z]\d+)\s*/")
+    decl = re.compile(r"\(\s*([a-z]\d*)\s*/")
     counts = Counter()
     for m in decl.finditer(amr_string):
         counts[m.group(1)] += 1
@@ -31,7 +31,7 @@ def dedup_variables_in_amr_string(amr_string: str) -> str:
         return amr_string
 
     seen = Counter()
-    token = re.compile(r"\b([a-z]\d+)\b")
+    token = re.compile(r"\b([a-z]\d*)\b")
 
     def repl(match):
         v = match.group(1)
@@ -43,6 +43,16 @@ def dedup_variables_in_amr_string(amr_string: str) -> str:
         return f"{v}_{seen[v] - 1}"
 
     return token.sub(repl, amr_string)
+
+
+def fix_unclosed_parentheses(amr_string: str) -> str:
+    """Ensure every '(' has a matching ')'."""
+    amr_string = amr_string.rstrip(' )')
+    open_count = amr_string.count('(')
+    close_count = amr_string.count(')')
+    if open_count > close_count:
+        amr_string += ' )' * (open_count - close_count)
+    return amr_string
 
 
 def token_processing(tok):

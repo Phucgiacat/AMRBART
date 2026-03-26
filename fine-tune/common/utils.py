@@ -406,6 +406,8 @@ def calculate_rouge(
 
 
 def calculate_smatch(test_path, predictions_path) -> dict:
+    import smatch
+    from pathlib import Path
     with Path(predictions_path).open() as p, Path(test_path).open() as g:
         score = next(smatch.score_amr_pairs(p, g))
     return {"smatch": score[2]}

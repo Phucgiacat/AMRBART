@@ -403,6 +403,7 @@ def main():
         pieces = []
         for g in graphs:
             txt = penman.encode(g[0])
+            txt = postprocessing.fix_unclosed_parentheses(txt)
             txt = postprocessing.fix_empty_concepts_in_amr_string(txt)
             txt = postprocessing.dedup_variables_in_amr_string(txt)
             pieces.append(txt)
@@ -629,6 +630,7 @@ def main():
                                 graph.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
 
                         txt = penman.encode(graph)
+                        txt = postprocessing.fix_unclosed_parentheses(txt)
                         txt = postprocessing.fix_empty_concepts_in_amr_string(txt)
                         txt = postprocessing.dedup_variables_in_amr_string(txt)
                         graphs.append(txt)
