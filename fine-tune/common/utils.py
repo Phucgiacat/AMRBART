@@ -406,11 +406,44 @@ def calculate_rouge(
 
 
 def calculate_smatch(test_path, predictions_path) -> dict:
-    import smatch
-    from pathlib import Path
-    with Path(predictions_path).open() as p, Path(test_path).open() as g:
-        score = next(smatch.score_amr_pairs(p, g))
-    return {"smatch": score[2]}
+    try:
+        from amrlib.evaluate.smatch_enhanced import compute_scores
+        import contextlib
+        import io
+        import re
+        import logging
+        
+        f = io.StringIO()
+        with contextlib.redirect_stdout(f):
+            out = compute_scores(predictions_path, test_path)
+            
+        if isinstance(out, dict):
+            for k, v in out.items():
+                if k.lower() == 'smatch':
+                    return {"smatch": float(v[2])}
+        elif isinstance(out, tuple) and len(out) >= 3:
+            return {"smatch": float(out[2])}
+            
+        output = f.getvalue()
+        match = re.search(r'Smatch.*?F:\s*([0-9.]+)', output, re.IGNORECASE)
+        if match:
+            return {"smatch": float(match.group(1))}
+            
+        logging.error(f"Could not parse amrlib output: {output}")
+        return {"smatch": 0.0}
+    except ImportError:
+        import smatch
+        from pathlib import Path
+        try:
+            with Path(predictions_path).open() as p, Path(test_path).open() as g:
+                score = next(smatch.score_amr_pairs(p, g))
+            return {"smatch": score[2]}
+        except:
+            return {"smatch": 0.0}
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"smatch": 0.0}
 
 
 def smart_emb_init_sim(tokenizer, model):
