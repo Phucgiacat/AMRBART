@@ -13,7 +13,7 @@ MODEL=xfbai/AMRBART-large-v2
 ModelCache=$BasePath/.cache
 DataCache=$DataPath/.cache/dump-amrparsing
 
-lr=3e-5
+lr=1e-5
 
 OutputDir=${RootDir}/outputs/$Dataset-${ModelCate}-AMRParing-bsz32-lr-${lr}-rgl
 
@@ -43,29 +43,29 @@ python3 -u main.py \
     --output_dir $OutputDir \
     --cache_dir $ModelCache \
     --data_cache_dir $DataCache \
-    --tokenizer_name $MODEL \
+    --tokenizer_name "facebook/bart-large" \
     --model_name_or_path $MODEL \
     --overwrite_output_dir \
     --overwrite_cache True \
     --unified_input True \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 4 \
     --learning_rate $lr \
     --optim "adamw_hf" \
-    --lr_scheduler_type "linear" \
+    --lr_scheduler_type "polynomial" \
     --warmup_steps 200 \
     --num_train_epochs 10 \
     --early_stopping 10 \
     --max_source_length 400 \
-    --max_target_length 512 \
-    --val_max_target_length 512 \
-    --generation_max_length 512 \
+    --max_target_length 1024 \
+    --val_max_target_length 1024 \
+    --generation_max_length 1024 \
     --generation_num_beams 5 \
     --label_smoothing_factor 0.1 \
     --evaluation_strategy "epoch" \
     --weight_decay 0.01 \
-    --max_grad_norm 1.0 \
+    --max_grad_norm 0 \
     --max_steps -1 \
     --predict_with_generate \
     --predict_without_label False \
