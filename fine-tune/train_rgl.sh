@@ -55,8 +55,8 @@ python3 -u main.py \
     --optim "adamw_hf" \
     --lr_scheduler_type "linear" \
     --warmup_steps 200 \
-    --num_train_epochs 10 \
-    --early_stopping 10 \
+    --num_train_epochs 15 \
+    --early_stopping 3 \
     --max_source_length 400 \
     --max_target_length 512 \
     --val_max_target_length 512 \
