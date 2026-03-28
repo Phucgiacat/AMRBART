@@ -405,6 +405,40 @@ def calculate_rouge(
         return aggregator._scores  # here we return defaultdict(list)
 
 
+def _split_nonempty_amr_graphs(text: str):
+    """Split a file into one AMR graph per block (blank line separators)."""
+    import re
+
+    text = (text or "").strip()
+    if not text:
+        return []
+    parts = re.split(r"\n\s*\n+", text)
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _warn_graph_count_mismatch(gold_path: str, pred_path: str) -> None:
+    """Log a clear warning if gold and prediction files have different graph counts (causes Empty amr_gold in amrlib)."""
+    import logging
+    from pathlib import Path
+
+    try:
+        gold_text = Path(gold_path).read_text(encoding="utf-8", errors="replace")
+        pred_text = Path(pred_path).read_text(encoding="utf-8", errors="replace")
+    except OSError as e:
+        logging.warning("calculate_smatch: could not read files for graph count check: %s", e)
+        return
+    ng, np = len(_split_nonempty_amr_graphs(gold_text)), len(_split_nonempty_amr_graphs(pred_text))
+    if ng != np:
+        logging.warning(
+            "calculate_smatch: graph count mismatch — gold %s has %d graphs, predictions %s has %d. "
+            "Align with one graph per block separated by a blank line; empty gold blocks cause 'Empty amr_gold entry'.",
+            gold_path,
+            ng,
+            pred_path,
+            np,
+        )
+
+
 def calculate_smatch(test_path, predictions_path) -> dict:
     try:
         from amrlib.evaluate.smatch_enhanced import compute_scores
@@ -412,7 +446,9 @@ def calculate_smatch(test_path, predictions_path) -> dict:
         import io
         import re
         import logging
-        
+
+        _warn_graph_count_mismatch(test_path, predictions_path)
+
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
             out = compute_scores(predictions_path, test_path)

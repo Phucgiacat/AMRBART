@@ -399,12 +399,12 @@ def main():
         
         # print("Before Penman Encoding")
         for gps in graphs:
-            for gp in gps:
-                # Replace empty instance values with placeholder
-                for i, triple in enumerate(gp.triples):
+            for i, gp in enumerate(gps):
+                for j, triple in enumerate(gp.triples):
                     if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
-                        gp.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
-        
+                        gp.triples[j] = penman.Triple(triple[0], triple[1], 'amr-unknown')
+                gps[i] = postprocessing.ensure_all_variables_have_instance(gp)
+
         pieces = []
         for g in graphs:
             txt = penman.encode(g[0])
@@ -633,6 +633,8 @@ def main():
                         for i, triple in enumerate(graph.triples):
                             if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
                                 graph.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
+
+                        graph = postprocessing.ensure_all_variables_have_instance(graph)
 
                         txt = penman.encode(graph)
                         txt = postprocessing.fix_unclosed_parentheses(txt)

@@ -20,9 +20,40 @@ def fix_empty_concepts_in_amr_string(amr_string: str, placeholder: str = "amr-un
     return pattern.sub(r"( \1 / " + placeholder + " )", amr_string)
 
 
+def _token_looks_like_amr_variable(s: str) -> bool:
+    """Heuristic for variable ids (``z1000``, ``x1``, …), not string literals or numbers."""
+    if not isinstance(s, str) or not s or s.startswith('"'):
+        return False
+    if s in ("-", "+", "-1", "+1") or (s.isdigit() or (s[0] in "+-" and len(s) > 1 and s[1:].isdigit())):
+        return False
+    return bool(re.fullmatch(r"[^\W\d_]\w*", s, re.UNICODE))
+
+
+def ensure_all_variables_have_instance(graph: penman.Graph) -> penman.Graph:
+    triples = list(graph.triples)
+    have_inst = {t[0] for t in triples if t[1] == ":instance"}
+    try:
+        all_vars = set(graph.variables())
+    except Exception:
+        all_vars = {t[0] for t in triples}
+        for t in triples:
+            v2 = t[2]
+            if isinstance(v2, str) and _token_looks_like_amr_variable(v2):
+                all_vars.add(v2)
+    missing = all_vars - have_inst
+    if not missing:
+        return graph
+    for v in sorted(missing):
+        triples.append(penman.Triple(v, ":instance", "amr-unknown"))
+    g = penman.Graph(triples)
+    g.metadata = dict(getattr(graph, "metadata", None) or {})
+    return g
+
+
 def dedup_variables_in_amr_string(amr_string: str) -> str:
-    """Ensure variable names are unique within one AMR string."""
-    decl = re.compile(r"\(\s*([a-z]\d*)\s*/")
+    """Ensure variable names are unique within one AMR string.
+    """
+    decl = re.compile(r"\(\s*(\w+)\s*/", re.UNICODE)
     counts = Counter()
     for m in decl.finditer(amr_string):
         counts[m.group(1)] += 1
@@ -31,11 +62,11 @@ def dedup_variables_in_amr_string(amr_string: str) -> str:
         return amr_string
 
     seen = Counter()
-    token = re.compile(r"\b([a-z]\d*)\b")
+    token = re.compile(r"\b(\w+)\b", re.UNICODE)
 
     def repl(match):
         v = match.group(1)
-        if counts[v] <= 1:
+        if counts.get(v, 0) <= 1:
             return v
         seen[v] += 1
         if seen[v] == 1:

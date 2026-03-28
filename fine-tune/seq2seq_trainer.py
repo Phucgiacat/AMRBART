@@ -765,6 +765,8 @@ class Seq2SeqTrainer(Trainer):
                             if triple[1] == ':instance' and (triple[2] == '' or triple[2] is None):
                                 graph.triples[i] = penman.Triple(triple[0], triple[1], 'amr-unknown')
 
+                        graph = postprocessing.ensure_all_variables_have_instance(graph)
+
                         txt = penman.encode(graph)
                         txt = postprocessing.fix_empty_concepts_in_amr_string(txt)
                         txt = postprocessing.dedup_variables_in_amr_string(txt)
