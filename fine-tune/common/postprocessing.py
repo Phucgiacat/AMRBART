@@ -52,28 +52,80 @@ def ensure_all_variables_have_instance(graph: penman.Graph) -> penman.Graph:
 
 def dedup_variables_in_amr_string(amr_string: str) -> str:
     """Ensure variable names are unique within one AMR string.
-    """
-    decl = re.compile(r"\(\s*(\w+)\s*/", re.UNICODE)
-    counts = Counter()
-    for m in decl.finditer(amr_string):
-        counts[m.group(1)] += 1
 
-    if all(v <= 1 for v in counts.values()):
+    Two-pass approach:
+      Pass 1 – find all variable *declarations* ``( var /`` and identify duplicates.
+      Pass 2 – for each duplicate (2nd occurrence onward), generate a fresh name
+               and replace both the declaration and every *reference* to that
+               variable in the scope of that sub-graph.
+    """
+    decl_re = re.compile(r"\(\s*(\w+)\s*/", re.UNICODE)
+
+    # Collect declaration positions: var -> [match_start, ...]
+    positions = defaultdict(list)
+    for m in decl_re.finditer(amr_string):
+        positions[m.group(1)].append(m.start(1))
+
+    # Only care about vars declared more than once
+    dups = {v: pos_list for v, pos_list in positions.items() if len(pos_list) > 1}
+    if not dups:
         return amr_string
 
-    seen = Counter()
-    token = re.compile(r"\b(\w+)\b", re.UNICODE)
+    # Build a rename map: (original_var, declaration_char_pos) -> new_var
+    # Keep the first declaration as-is; rename 2nd, 3rd, ...
+    _used_vars = set(positions.keys())
+    rename_map = {}          # old_var -> {decl_pos: new_var}
+    for var, pos_list in dups.items():
+        for idx, pos in enumerate(pos_list):
+            if idx == 0:
+                continue     # keep the first one
+            # generate a unique new name
+            suffix = idx
+            new_var = f"{var}x{suffix}"
+            while new_var in _used_vars:
+                suffix += 100
+                new_var = f"{var}x{suffix}"
+            _used_vars.add(new_var)
+            rename_map.setdefault(var, {})[pos] = new_var
 
-    def repl(match):
-        v = match.group(1)
-        if counts.get(v, 0) <= 1:
-            return v
-        seen[v] += 1
-        if seen[v] == 1:
-            return v
-        return f"{v}_{seen[v] - 1}"
+    # For each duplicate var, walk through the string and figure out which
+    # occurrence of that var belongs to which declaration scope, then rename.
+    # Strategy: process each dup var independently.
+    # We find ALL occurrences of the var as a whole word, then decide for each:
+    #   - if it IS a declaration (at a known decl_pos) → rename to new_var
+    #   - if it is a reference → determine which declaration it "belongs to"
+    #     (the most recent declaration of that var before this position)
+    #     and apply the same rename.
 
-    return token.sub(repl, amr_string)
+    for var, pos_renames in rename_map.items():
+        decl_positions_sorted = sorted(positions[var])  # all decl positions
+        # Build mapping: decl_pos -> new_name (None means keep original)
+        decl_name = {}
+        for dp in decl_positions_sorted:
+            decl_name[dp] = pos_renames.get(dp, None)  # None = keep original
+
+        # Find all whole-word occurrences of var
+        var_re = re.compile(r"(?<!\w)" + re.escape(var) + r"(?!\w)", re.UNICODE)
+        pieces = []
+        last_end = 0
+        for m in var_re.finditer(amr_string):
+            occ_start = m.start()
+            # Which declaration does this occurrence belong to?
+            # → the latest decl_pos that is <= occ_start
+            owner_decl = None
+            for dp in decl_positions_sorted:
+                if dp <= occ_start:
+                    owner_decl = dp
+                else:
+                    break
+            new_name = decl_name.get(owner_decl) if owner_decl is not None else None
+            pieces.append(amr_string[last_end:m.start()])
+            pieces.append(new_name if new_name else var)
+            last_end = m.end()
+        pieces.append(amr_string[last_end:])
+        amr_string = "".join(pieces)
+
+    return amr_string
 
 
 def fix_unclosed_parentheses(amr_string: str) -> str:

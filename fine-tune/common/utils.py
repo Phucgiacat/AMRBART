@@ -439,6 +439,36 @@ def _warn_graph_count_mismatch(gold_path: str, pred_path: str) -> None:
         )
 
 
+def _sanitize_prediction_file(predictions_path: str) -> str:
+    """Read prediction AMR file, dedup variables in each graph, write a cleaned temp file.
+
+    Returns the path to the sanitized file (same dir, suffix '_clean.txt').
+    """
+    from pathlib import Path
+    from common import postprocessing
+
+    pred_text = Path(predictions_path).read_text(encoding="utf-8", errors="replace")
+    graphs = _split_nonempty_amr_graphs(pred_text)
+
+    cleaned = []
+    for g in graphs:
+        # Only apply dedup to the graph body (skip comment lines)
+        lines = g.split("\n")
+        comment_lines = [l for l in lines if l.strip().startswith("#")]
+        body_lines = [l for l in lines if not l.strip().startswith("#")]
+        body = "\n".join(body_lines)
+
+        body = postprocessing.dedup_variables_in_amr_string(body)
+        body = postprocessing.fix_unclosed_parentheses(body)
+        body = postprocessing.fix_empty_concepts_in_amr_string(body)
+
+        cleaned.append("\n".join(comment_lines + [body]) if comment_lines else body)
+
+    clean_path = predictions_path.rsplit(".", 1)[0] + "_clean.txt"
+    Path(clean_path).write_text("\n\n".join(cleaned) + "\n", encoding="utf-8")
+    return clean_path
+
+
 def calculate_smatch(test_path, predictions_path) -> dict:
     try:
         from amrlib.evaluate.smatch_enhanced import compute_scores
@@ -449,9 +479,12 @@ def calculate_smatch(test_path, predictions_path) -> dict:
 
         _warn_graph_count_mismatch(test_path, predictions_path)
 
+        # Sanitize predictions to remove duplicate variable names
+        clean_pred_path = _sanitize_prediction_file(predictions_path)
+
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
-            out = compute_scores(predictions_path, test_path)
+            out = compute_scores(clean_pred_path, test_path)
             
         if isinstance(out, dict):
             for k, v in out.items():
@@ -471,7 +504,8 @@ def calculate_smatch(test_path, predictions_path) -> dict:
         import smatch
         from pathlib import Path
         try:
-            with Path(predictions_path).open() as p, Path(test_path).open() as g:
+            clean_pred_path = _sanitize_prediction_file(predictions_path)
+            with Path(clean_pred_path).open() as p, Path(test_path).open() as g:
                 score = next(smatch.score_amr_pairs(p, g))
             return {"smatch": score[2]}
         except:
@@ -480,6 +514,7 @@ def calculate_smatch(test_path, predictions_path) -> dict:
         import traceback
         traceback.print_exc()
         return {"smatch": 0.0}
+
 
 
 def smart_emb_init_sim(tokenizer, model):
