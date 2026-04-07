@@ -31,6 +31,13 @@ if [ ! -d ${DataCache} ];then
   mkdir -p ${DataCache}
 fi
 
+# Activate venv if available (Colab)
+VENV=${VENV:-/content/AMRBART/.venv}
+if [ -f "$VENV/bin/activate" ]; then
+  source "$VENV/bin/activate"
+  echo "Activated venv: $VENV"
+fi
+
 export HF_DATASETS_CACHE=$DataCache
 
 # Resume from Drive checkpoint if available
