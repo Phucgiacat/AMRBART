@@ -11,7 +11,8 @@ else
   echo "Using local dataset: $DataPath"
 fi
 
-MODEL=facebook/mbart-large-50
+# Allow override via env var (e.g. MODEL=/content/mbart-large-50)
+MODEL=${MODEL:-facebook/mbart-large-50}
 interval=1
 
 lr=5e-5
