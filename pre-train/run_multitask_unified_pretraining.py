@@ -32,8 +32,8 @@ import re
 import shutil
 from typing import Dict, List, Any, Tuple
 from data_interface.dataset import AMRDataSet, DataCollatorForSeq2Seq
-from model_interface.modeling_bart import BartForConditionalGeneration
-from model_interface.tokenization_bart import AMRBartTokenizer
+from model_interface.tokenization_mbart import AMRMBartTokenizer
+from transformers import MBartForConditionalGeneration
 
 import numpy as np
 import torch
@@ -1168,7 +1168,7 @@ def main():
             "and load it from here, using --config_name"
         )
 
-    tokenizer = AMRBartTokenizer.from_pretrained(
+    tokenizer = AMRMBartTokenizer.from_pretrained(
         args.model_name_or_path,
     )
 
@@ -1178,7 +1178,7 @@ def main():
         args.block_size = min(args.block_size, tokenizer.model_max_length)
 
     if args.model_name_or_path:
-        model = BartForConditionalGeneration.from_pretrained(
+        model = MBartForConditionalGeneration.from_pretrained(
             args.model_name_or_path,
             from_tf=bool(".ckpt" in args.model_name_or_path),
             config=config,
@@ -1186,7 +1186,7 @@ def main():
         )
     else:
         logger.info("Training new model from scratch")
-        model = BartForConditionalGeneration.from_config(config)
+        model = MBartForConditionalGeneration(config)
 
     model.resize_token_embeddings(len(tokenizer))
     model.to(args.device)

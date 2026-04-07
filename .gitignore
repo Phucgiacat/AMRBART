@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+pre-train/PRETRAIN_SUMMARY.md
+pre-train/CLAUDE.md
+pre-train/.claude/

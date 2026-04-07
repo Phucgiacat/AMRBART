@@ -34,9 +34,11 @@ def token_processing(tok):
 def decode_into_node_and_backreferences(subtoken_ids, tokenizer):
     rex_arg = re.compile(f"^{tokenizer.INIT}(op|snt|conj|prep)")
     rex_spc = re.compile(r"<(s|/s|lit|/lit|stop|unk|pad|mask)>")
-    
-    subtoken_ids.insert(1,36)           # add "(" id
-    subtoken_ids.insert(-1, 4839)       # add ")" id
+
+    paren_open_id = tokenizer.encoder.get("(") or tokenizer.encoder.get(tokenizer.INIT + "(", 36)
+    paren_close_id = tokenizer.encoder.get(")") or tokenizer.encoder.get(tokenizer.INIT + ")", 4839)
+    subtoken_ids.insert(1, paren_open_id)       # add "(" id
+    subtoken_ids.insert(-1, paren_close_id)     # add ")" id
 
     # get strings
     subtokens = [tokenizer.decoder.get(t) for t in subtoken_ids]
