@@ -26,10 +26,14 @@ class AMRMBartTokenizer(MBart50TokenizerFast):
         inst.init_amr_vocabulary()
         return inst
 
+    @property
+    def decoder(self):
+        return self._id_to_token
+
     def _refresh_vocab_maps(self):
         vocab = self.get_vocab()
         self.encoder = vocab
-        self.decoder = {v: k for k, v in vocab.items()}
+        self._id_to_token = {v: k for k, v in vocab.items()}
 
     def init_amr_vocabulary(self):
         self._refresh_vocab_maps()
