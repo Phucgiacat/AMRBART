@@ -44,7 +44,9 @@ else
 fi
 
 # Colab: single GPU setup
-CUDA_VISIBLE_DEVICES=0 $VENV/bin/python -m torch.distributed.run --nproc_per_node=1 run_multitask_unified_pretraining.py \
+# Use PYTHON env var if set, otherwise fall back to $VENV/bin/python
+PYTHON_BIN=${PYTHON:-${VENV}/bin/python}
+CUDA_VISIBLE_DEVICES=0 $PYTHON_BIN -m torch.distributed.run --nproc_per_node=1 run_multitask_unified_pretraining.py \
   --train_file $DataPath/train.jsonl \
   --val_file $DataPath/val.jsonl \
   --test_file $DataPath/test.jsonl \
