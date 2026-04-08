@@ -32,13 +32,6 @@ if [ ! -d ${DataCache} ];then
   mkdir -p ${DataCache}
 fi
 
-# Activate venv if available (Colab)
-VENV=${VENV:-/content/AMRBART/.venv}
-if [ -f "$VENV/bin/activate" ]; then
-  source "$VENV/bin/activate"
-  echo "Activated venv: $VENV"
-fi
-
 export HF_DATASETS_CACHE=$DataCache
 
 # Resume from Drive checkpoint if available
@@ -51,7 +44,7 @@ else
 fi
 
 # Colab: single GPU setup
-CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 run_multitask_unified_pretraining.py \
+CUDA_VISIBLE_DEVICES=0 $VENV/bin/python -m torch.distributed.run --nproc_per_node=1 run_multitask_unified_pretraining.py \
   --train_file $DataPath/train.jsonl \
   --val_file $DataPath/val.jsonl \
   --test_file $DataPath/test.jsonl \
@@ -71,8 +64,8 @@ CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 run_multitask_unified_pretrai
   --save_total_limit 2 \
   --do_train \
   --do_eval \
-  --evaluate_during_training  \
-  --num_train_epochs 15  \
+  --evaluate_during_training \
+  --num_train_epochs 15 \
   --learning_rate $lr \
   --joint_train_interval $interval \
   --warmup_steps 2500 \
