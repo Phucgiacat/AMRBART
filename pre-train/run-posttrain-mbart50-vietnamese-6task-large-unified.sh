@@ -44,7 +44,11 @@ else
 fi
 
 # Colab: single GPU setup
-CUDA_VISIBLE_DEVICES=0 $VENV/bin/python -m torch.distributed.run --nproc_per_node=1 run_multitask_unified_pretraining.py \
+PYTHON=${VENV:-/content/AMRBART/pre-train/.venv}/bin/python
+echo "Using Python: $PYTHON"
+$PYTHON -c "import sys; print(sys.executable, sys.version)"
+
+CUDA_VISIBLE_DEVICES=0 $PYTHON -m torch.distributed.run --nproc_per_node=1 run_multitask_unified_pretraining.py \
   --train_file $DataPath/train.jsonl \
   --val_file $DataPath/val.jsonl \
   --test_file $DataPath/test.jsonl \
