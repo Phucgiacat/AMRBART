@@ -675,8 +675,9 @@ def evaluate(
     nb_eval_steps = 0
     model.eval()
 
-    pbar = tqdm(eval_dataloader, desc="Evaluating", miniters=100, maxinterval=60)
-    for batch in pbar:
+    total_eval_steps = len(eval_dataloader)
+    log_interval = max(1, total_eval_steps // 10)
+    for step, batch in enumerate(eval_dataloader):
 
         with torch.no_grad():
             if args.mlm_amr:
@@ -826,9 +827,11 @@ def evaluate(
                 + joint2joint_loss
             )
 
-            pbar.set_postfix(lm_loss=loss.mean().item())
+            cur_loss = loss.mean().item()
+            if (step + 1) % log_interval == 0 or (step + 1) == total_eval_steps:
+                logger.info("  Evaluating step %d/%d, loss=%.4f", step + 1, total_eval_steps, cur_loss)
 
-            eval_loss += loss.mean().item()
+            eval_loss += cur_loss
         nb_eval_steps += 1
 
     eval_loss = eval_loss / nb_eval_steps

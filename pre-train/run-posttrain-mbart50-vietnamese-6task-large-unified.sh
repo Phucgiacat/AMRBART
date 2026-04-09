@@ -76,7 +76,7 @@ CUDA_VISIBLE_DEVICES=0 $PYTHON -m torch.distributed.run --nproc_per_node=1 run_m
   --learning_rate $lr \
   --joint_train_interval $interval \
   --warmup_steps 2500 \
-  --max_steps 100000 \
+  --max_steps 8000 \
   --logging_steps 500 \
   --save_steps 2000 \
   --overwrite_output_dir \
