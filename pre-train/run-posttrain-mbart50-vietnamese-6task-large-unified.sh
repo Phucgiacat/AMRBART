@@ -64,7 +64,7 @@ CUDA_VISIBLE_DEVICES=0 $PYTHON -m torch.distributed.run --nproc_per_node=1 run_m
   --mlm_joint_to_amr \
   --mlm_joint_to_text \
   --block_size 512 \
-  --per_gpu_train_batch_size 4 \
+  --per_gpu_train_batch_size 2 \
   --gradient_accumulation_steps 8 \
   --model_type mbart \
   $RESUME_FLAG \
