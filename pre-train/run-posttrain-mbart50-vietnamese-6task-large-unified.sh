@@ -22,7 +22,7 @@ fi
 interval=1
 lr=5e-5
 
-outpath=output/${dataset}-mbart50-large-Unifiedtextinf-JointDenoise-6task-${lr}-AMREOS
+outpath=/content/drive/MyDrive/AMRBART/output/${dataset}-mbart50-large-Unifiedtextinf-JointDenoise-6task-${lr}-AMREOS
 DataCache=$DataPath/.cache
 
 DrivePath=/content/drive/MyDrive/AMRBART/${dataset}-mbart50-large-6task-${lr}
