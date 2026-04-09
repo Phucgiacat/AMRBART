@@ -284,7 +284,8 @@ def train(
     set_seed(args)  # Added here for reproducibility
     for epoch in train_iterator:
         epoch_iterator = tqdm(
-            train_dataloader, desc="Iteration", disable=args.local_rank not in [-1, 0]
+            train_dataloader, desc="Iteration", disable=args.local_rank not in [-1, 0],
+            miniters=100, maxinterval=60
         )
 
         if args.local_rank != -1:
@@ -674,7 +675,7 @@ def evaluate(
     nb_eval_steps = 0
     model.eval()
 
-    pbar = tqdm(eval_dataloader, desc="Evaluating")
+    pbar = tqdm(eval_dataloader, desc="Evaluating", miniters=100, maxinterval=60)
     for batch in pbar:
 
         with torch.no_grad():
