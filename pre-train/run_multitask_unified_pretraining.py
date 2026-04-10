@@ -35,6 +35,8 @@ from data_interface.dataset import AMRDataSet, DataCollatorForSeq2Seq
 from model_interface.tokenization_mbart import AMRMBartTokenizer
 from transformers import MBartForConditionalGeneration
 
+import penman
+import smatch
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
@@ -142,6 +144,7 @@ def train(
     model: PreTrainedModel,
     tokenizer: PreTrainedTokenizer,
     config,
+    test_dataset=None,
 ) -> Tuple[int, float]:
     """ Train the model """
     if args.local_rank in [-1, 0]:
@@ -246,6 +249,8 @@ def train(
     epoch_step = 0
     steps_trained_in_current_epoch = 0
     best_score = float("inf")
+    best_smatch = 0.0
+    patience_counter = 0
     # Check if continuing training from a checkpoint
     if args.model_name_or_path and os.path.exists(args.model_name_or_path):
         try:
@@ -631,6 +636,49 @@ def train(
         avg_epoch_loss = epoch_loss / epoch_step
         logger.info("\nEpoch End... \navg_train_loss = %s", str(avg_epoch_loss))
 
+        # Generate AMR and compute SMATCH at end of each epoch
+        if args.local_rank in [-1, 0]:
+            gen_result = generate_and_eval_smatch(
+                args,
+                eval_dataset,
+                collate_fn,
+                model,
+                tokenizer,
+                global_step=global_step,
+                prefix=f"epoch{epoch + 1}",
+            )
+            tb_writer.add_scalar("eval_smatch", gen_result["smatch"], global_step)
+            logger.info(
+                "Epoch %d SMATCH = %.4f", epoch + 1, gen_result["smatch"]
+            )
+
+            # Save best model based on SMATCH
+            if gen_result["smatch"] > best_smatch:
+                best_smatch = gen_result["smatch"]
+                patience_counter = 0
+                best_output_dir = os.path.join(args.output_dir, "checkpoint-best-smatch")
+                os.makedirs(best_output_dir, exist_ok=True)
+                model_to_save = (
+                    model.module if hasattr(model, "module") else model
+                )
+                model_to_save.save_pretrained(best_output_dir)
+                tokenizer.save_pretrained(best_output_dir)
+                torch.save(args, os.path.join(best_output_dir, "training_args.bin"))
+                with open(os.path.join(best_output_dir, "best_smatch.txt"), "w") as f:
+                    f.write(f"epoch={epoch + 1}\nglobal_step={global_step}\nsmatch={best_smatch:.4f}\n")
+                logger.info(
+                    "New best SMATCH = %.4f, saving model to %s", best_smatch, best_output_dir
+                )
+            else:
+                patience_counter += 1
+                logger.info(
+                    "No SMATCH improvement. Patience %d/%d", patience_counter, args.early_stopping_patience
+                )
+                if args.early_stopping_patience > 0 and patience_counter >= args.early_stopping_patience:
+                    logger.info("Early stopping triggered after %d epochs without improvement.", patience_counter)
+                    train_iterator.close()
+                    break
+
     if args.local_rank in [-1, 0]:
         tb_writer.close()
 
@@ -847,6 +895,130 @@ def evaluate(
             writer.write("%s = %s\n" % (key, str(result[key])))
 
     return result
+
+
+def _decode_amr_ids_to_graph(token_ids, tokenizer):
+    """Decode a list of AMR token IDs into a penman Graph."""
+    token_ids = list(token_ids)
+    # Prepend bos, map amr_eos -> eos, remove padding and -100
+    token_ids = [tokenizer.bos_token_id] + [
+        tokenizer.eos_token_id if itm == tokenizer.amr_eos_token_id else itm
+        for itm in token_ids if itm != tokenizer.pad_token_id and itm != -100
+    ]
+    graph, status, (lin, backr) = tokenizer.decode_amr(
+        token_ids, restore_name_ops=False
+    )
+    graph.status = status
+    return graph
+
+
+def generate_and_eval_smatch(
+    args,
+    eval_dataset,
+    collate_fn,
+    model: PreTrainedModel,
+    tokenizer,
+    global_step=0,
+    prefix="val",
+):
+    """Generate AMR graphs from text input and compute SMATCH score against gold labels."""
+    eval_output_dir = os.path.join(args.output_dir, "val_outputs")
+    os.makedirs(eval_output_dir, exist_ok=True)
+
+    eval_sampler = SequentialSampler(eval_dataset)
+    eval_dataloader = DataLoader(
+        eval_dataset,
+        sampler=eval_sampler,
+        batch_size=args.per_gpu_eval_batch_size * max(1, args.n_gpu),
+        collate_fn=collate_fn,
+        num_workers=4,
+    )
+
+    logger.info("***** Running AMR generation (%s) *****", prefix)
+    logger.info("  Num examples = %d", len(eval_dataset))
+
+    model_to_use = model.module if hasattr(model, "module") else model
+    model_to_use.eval()
+
+    all_preds = []
+    all_labels = []
+    all_input_ids = []
+    for batch in tqdm(eval_dataloader, desc="Generating"):
+        input_ids = batch["input_ids"].to(args.device)
+        attention_mask = input_ids.ne(tokenizer.pad_token_id).int()
+
+        with torch.no_grad():
+            generated = model_to_use.generate(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                use_cache=True,
+                decoder_start_token_id=tokenizer.amr_bos_token_id,
+                eos_token_id=tokenizer.amr_eos_token_id,
+                no_repeat_ngram_size=0,
+                max_length=args.generation_max_length,
+                min_length=0,
+                num_beams=args.num_beams,
+                length_penalty=1.0,
+            )
+
+        all_preds.append(generated.cpu().numpy())
+        all_labels.append(batch["labels"].numpy())
+        all_input_ids.append(input_ids.cpu().numpy())
+
+    # Decode input sentences
+    all_input_ids = np.concatenate(all_input_ids, axis=0)
+    decoded_inputs = tokenizer.batch_decode(all_input_ids, skip_special_tokens=True)
+
+    # Decode predicted AMR graphs
+    all_preds_np = np.concatenate(all_preds, axis=0)
+    pred_graphs = []
+    for idx in range(len(all_preds_np)):
+        graph = _decode_amr_ids_to_graph(all_preds_np[idx], tokenizer)
+        pred_graphs.append(graph)
+
+    # Decode gold AMR graphs from labels
+    all_labels_np = np.concatenate(all_labels, axis=0)
+    gold_graphs = []
+    for idx in range(len(all_labels_np)):
+        graph = _decode_amr_ids_to_graph(all_labels_np[idx], tokenizer)
+        gold_graphs.append(graph)
+
+    # Add metadata to both pred and gold
+    for idx, (pg, gg, snt) in enumerate(zip(pred_graphs, gold_graphs, decoded_inputs)):
+        snt_clean = snt.replace("<AMR>", "").replace("</AMR>", "").strip()
+        for g, annotator in [(pg, "bart-amr"), (gg, "gold")]:
+            g.metadata = {"id": str(idx), "annotator": annotator, "snt": snt_clean}
+
+    # Write prediction file
+    pred_pieces = [penman.encode(g) for g in pred_graphs]
+    pred_file = os.path.join(
+        eval_output_dir, f"{prefix}_generated_predictions_{global_step}.txt"
+    )
+    with open(pred_file, "w", encoding="utf-8") as f:
+        f.write("\n\n".join(pred_pieces))
+    logger.info("Predictions written to %s", pred_file)
+
+    # Write gold file
+    gold_pieces = [penman.encode(g) for g in gold_graphs]
+    gold_file = os.path.join(
+        eval_output_dir, f"{prefix}_gold_{global_step}.txt"
+    )
+    with open(gold_file, "w", encoding="utf-8") as f:
+        f.write("\n\n".join(gold_pieces))
+    logger.info("Gold AMR written to %s", gold_file)
+
+    # Compute SMATCH
+    smatch_score = 0.0
+    try:
+        with open(pred_file) as p, open(gold_file) as g:
+            score = next(smatch.score_amr_pairs(p, g))
+        smatch_score = score[2]
+        logger.info("SMATCH (%s, step %d) = %.4f", prefix, global_step, smatch_score)
+    except Exception as e:
+        logger.warning("SMATCH computation failed: %s", e)
+        smatch_score = 0.0
+
+    return {"smatch": smatch_score, "pred_file": pred_file, "gold_file": gold_file}
 
 
 def main():
@@ -1100,6 +1272,15 @@ def main():
         help="Whether to apply mask text, amr, to text amr",
     )
     parser.add_argument(
+        "--num_beams", type=int, default=5, help="Number of beams for AMR generation during eval",
+    )
+    parser.add_argument(
+        "--generation_max_length", type=int, default=512, help="Max length for AMR generation",
+    )
+    parser.add_argument(
+        "--early_stopping_patience", type=int, default=0, help="Stop after N epochs without SMATCH improvement (0=disabled)",
+    )
+    parser.add_argument(
         "--freeze_embeds", action="store_true", help="Whether to freeze embeddings of the model",
     )
     parser.add_argument(
@@ -1234,6 +1415,7 @@ def main():
     # Dummy Test
     train_dataset = AMRdataset.train_dataset
     dev_dataset = AMRdataset.valid_dataset
+    test_dataset = AMRdataset.test_dataset
 
     seq2seq_collate_fn = DataCollatorForSeq2Seq(
         tokenizer,
@@ -1251,7 +1433,8 @@ def main():
             torch.distributed.barrier()
 
         global_step, tr_loss = train(
-            args, train_dataset, dev_dataset, seq2seq_collate_fn, model, tokenizer, config
+            args, train_dataset, dev_dataset, seq2seq_collate_fn, model, tokenizer, config,
+            test_dataset=test_dataset,
         )
         logger.info(" global_step = %s, average loss = %s", global_step, tr_loss)
         args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
